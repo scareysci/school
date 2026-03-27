@@ -557,68 +557,32 @@
                 `;
 
                 if (masterViewType === 'by-period') {
-                    // --- MASTER GRID (BY PERIOD) ---
+                    // --- MASTER GRID (BY PERIOD - STACKED) ---
                     html += `
-                        <div class="flex-1 overflow-auto bg-gray-200 p-4 print:hidden">
-                            <div class="bg-white border border-gray-300 shadow-sm w-max min-w-full inline-block align-top">
+                        <div class="flex-1 overflow-auto bg-gray-200 p-4 print:p-0 print:bg-white print:overflow-visible">
+                    `;
+
+                    const chunks = [ [0,1,2], [3,4,5] ]; 
+                    
+                    chunks.forEach((chunk, index) => {
+                        html += `
+                            <div class="bg-white border border-gray-300 shadow-sm mb-8 print:border-none print:shadow-none print:mb-0 ${index > 0 ? 'print-page-break' : ''} w-max min-w-full print:w-full">
+                                <div class="px-4 py-3 border-b bg-gray-50 flex items-center justify-between print:hidden">
+                                    <h2 class="font-bold text-gray-700">Days ${chunk[0]+1}-${chunk[2]+1}</h2>
+                                </div>
+                                <div class="hidden print:block mb-4">
+                                    <h1 class="text-2xl font-extrabold text-gray-800 uppercase tracking-tight">Master Grid (Days ${chunk[0]+1}-${chunk[2]+1})</h1>
+                                    <p class="text-sm text-gray-500">${escapeHtml(appSettings.schoolName)} | ${escapeHtml(appSettings.schoolYear)}</p>
+                                </div>
                                 <table class="border-collapse min-w-full">
                                     <thead>
                                         <tr>
                                             <th class="h-8 sticky top-0 left-0 z-30 bg-gray-100 border-b border-r border-gray-300 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] p-1 min-w-[120px]"></th>
-                                            ${[1,2,3,4,5,6].map(day => `<th colspan="6" class="h-8 sticky top-0 z-20 bg-gray-200 border-b border-r border-gray-300 text-[11px] uppercase tracking-wider text-center font-bold text-gray-700">Day ${day}</th>`).join('')}
+                                            ${chunk.map(dIndex => `<th colspan="6" class="h-8 sticky top-0 z-20 bg-gray-200 border-b border-r border-gray-300 text-[11px] uppercase tracking-wider text-center font-bold text-gray-700">Day ${dIndex+1}</th>`).join('')}
                                         </tr>
                                         <tr>
                                             <th class="h-6 sticky top-8 left-0 z-30 bg-gray-50 border-b-2 border-r border-gray-300 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] p-1 text-[10px] text-left px-2 font-bold text-gray-600 uppercase tracking-wide">Staff Name</th>
-                                            ${[0,1,2,3,4,5].map(d => [0,1,2,3,4,5].map(p => `<th class="h-6 sticky top-8 z-20 bg-gray-100 border-b-2 border-r border-gray-300 text-[9px] font-semibold text-gray-500 w-[56px] min-w-[56px] max-w-[56px]">P${p+1}</th>`).join('')).join('')}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                    `;
-
-                    teachers.forEach((t, rowIndex) => {
-                        const isLast = rowIndex === teachers.length - 1;
-                        html += `<tr class="hover:bg-indigo-50 group">
-                            <td class="sticky left-0 z-10 bg-white group-hover:bg-indigo-50 border-r border-gray-300 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] p-1.5 px-2 font-bold text-[10px] text-gray-800 ${!isLast ? 'border-b' : ''}">${escapeHtml(t.name)}</td>`;
-                        
-                        for(let d=0; d<6; d++) {
-                            for(let p=0; p<6; p++) {
-                                const cellData = t.schedule[p][d];
-                                const styles = getCellStyles(cellData);
-                                html += `<td class="p-0 align-middle ${!isLast ? 'border-b border-gray-200' : ''} ${p === 5 ? 'border-r-2 border-r-gray-300' : 'border-r border-gray-200'}">
-                                    <div draggable="true" ondragstart="handleDragStart(event, '${t.id}', ${p}, ${d})" ondragend="handleDragEnd(event)" ondragover="handleDragOver(event)" ondragenter="handleDragEnter(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, '${t.id}', ${p}, ${d})" onclick="startEdit(this, '${t.id}', ${p}, ${d}, true)" class="w-full h-full flex items-center justify-center transition-colors cursor-pointer ${styles} p-1 text-[9px] font-medium min-h-[32px] overflow-hidden whitespace-nowrap" title="${cellData.text ? 'Click to edit: '+escapeHtml(cellData.text) : 'Click to add class'}">
-                                        <span class="block w-[48px] truncate">${escapeHtml(cellData.text) || ''}</span>
-                                    </div>
-                                </td>`;
-                            }
-                        }
-                        html += `</tr>`;
-                    });
-
-                    html += `</tbody></table></div></div>`;
-
-                    // --- PRINT ONLY LAYOUT (BY PERIOD - Splits into 2 pages) ---
-                    let printHtml = `<div class="hidden print:block w-full p-0 bg-white">`;
-                    const chunks = [ [0,1,2], [3,4,5] ]; 
-                    
-                    chunks.forEach((chunk, index) => {
-                        const pageBreak = index > 0 ? 'page-break-before: always; break-before: page;' : '';
-                        printHtml += `
-                            <div style="${pageBreak}" class="w-full">
-                                <div class="mb-4 flex items-center justify-between">
-                                    <div>
-                                        <h1 class="text-2xl font-extrabold text-gray-800 uppercase tracking-tight">Master Grid (Days ${chunk[0]+1}-${chunk[2]+1})</h1>
-                                        <p class="text-sm text-gray-500">${escapeHtml(appSettings.schoolName)} | ${escapeHtml(appSettings.schoolYear)}</p>
-                                    </div>
-                                </div>
-                                <table class="border-collapse w-full mb-8">
-                                    <thead>
-                                        <tr>
-                                            <th class="h-8 bg-gray-100 border-b border-r border-gray-300 p-1 w-[120px]"></th>
-                                            ${chunk.map(dIndex => `<th colspan="6" class="h-8 bg-gray-200 border-b border-r border-gray-300 text-[11px] uppercase tracking-wider text-center font-bold text-gray-700">Day ${dIndex+1}</th>`).join('')}
-                                        </tr>
-                                        <tr>
-                                            <th class="h-6 bg-gray-50 border-b-2 border-r border-gray-300 p-1 text-[10px] text-left px-2 font-bold text-gray-600 uppercase tracking-wide">Staff Name</th>
-                                            ${chunk.map(dIndex => [0,1,2,3,4,5].map(p => `<th class="h-6 bg-gray-100 border-b-2 border-r border-gray-300 text-[9px] font-semibold text-gray-500 min-w-[56px] w-[56px]">P${p+1}</th>`).join('')).join('')}
+                                            ${chunk.map(dIndex => [0,1,2,3,4,5].map(p => `<th class="h-6 sticky top-8 z-20 bg-gray-100 border-b-2 border-r border-gray-300 text-[9px] font-semibold text-gray-500 w-[56px] min-w-[56px] max-w-[56px]">P${p+1}</th>`).join('')).join('')}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -626,110 +590,74 @@
 
                         teachers.forEach((t, rowIndex) => {
                             const isLast = rowIndex === teachers.length - 1;
-                            printHtml += `<tr>
-                                <td class="bg-white border-r border-gray-300 p-1.5 px-2 font-bold text-[10px] text-gray-800 ${!isLast ? 'border-b border-gray-200' : ''}">${escapeHtml(t.name)}</td>`;
+                            html += `<tr class="hover:bg-indigo-50 group">
+                                <td class="sticky left-0 z-10 bg-white group-hover:bg-indigo-50 border-r border-gray-300 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] p-1.5 px-2 font-bold text-[10px] text-gray-800 ${!isLast ? 'border-b' : ''}">${escapeHtml(t.name)}</td>`;
                             
                             chunk.forEach(d => {
                                 for(let p=0; p<6; p++) {
                                     const cellData = t.schedule[p][d];
                                     const styles = getCellStyles(cellData);
-                                    printHtml += `<td class="p-0 align-middle ${!isLast ? 'border-b border-gray-200' : ''} ${p === 5 ? 'border-r-2 border-r-gray-300' : 'border-r border-gray-200'}">
-                                        <div class="w-full h-full flex items-center justify-center ${styles} p-1 text-[9px] font-medium min-h-[32px] overflow-hidden whitespace-nowrap">
+                                    html += `<td class="p-0 align-middle ${!isLast ? 'border-b border-gray-200' : ''} ${p === 5 ? 'border-r-2 border-r-gray-300' : 'border-r border-gray-200'}">
+                                        <div draggable="true" ondragstart="handleDragStart(event, '${t.id}', ${p}, ${d})" ondragend="handleDragEnd(event)" ondragover="handleDragOver(event)" ondragenter="handleDragEnter(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, '${t.id}', ${p}, ${d})" onclick="startEdit(this, '${t.id}', ${p}, ${d}, true)" class="w-full h-full flex items-center justify-center transition-colors cursor-pointer ${styles} p-1 text-[9px] font-medium min-h-[32px] overflow-hidden whitespace-nowrap" title="${cellData.text ? 'Click to edit: '+escapeHtml(cellData.text) : 'Click to add class'}">
                                             <span class="block w-[48px] truncate">${escapeHtml(cellData.text) || ''}</span>
                                         </div>
                                     </td>`;
                                 }
                             });
-                            printHtml += `</tr>`;
+                            html += `</tr>`;
                         });
 
-                        printHtml += `</tbody></table></div>`;
+                        html += `</tbody></table></div>`;
                     });
-                    printHtml += `</div>`;
 
-                    return html + printHtml;
+                    html += `</div>`;
+                    return html;
 
                 } else {
-                    // --- MASTER GRID (BY TEACHER) ---
+                    // --- MASTER GRID (BY TEACHER - STACKED) ---
                     html += `
-                        <div class="flex-1 overflow-auto bg-gray-200 p-4 print:hidden">
-                            <div class="bg-white border border-gray-300 shadow-sm w-max min-w-full inline-block align-top">
-                                <table class="border-collapse min-w-full">
-                                    <thead>
-                                        <tr>
-                                            <th class="h-8 sticky top-0 left-0 z-30 bg-gray-100 border-b border-r border-gray-300 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] p-1 min-w-[50px]"></th>
-                                            ${[1,2,3,4,5,6].map(day => `<th colspan="${teachers.length}" class="h-8 sticky top-0 z-20 bg-gray-200 border-b border-r border-gray-300 text-[11px] uppercase tracking-wider text-center font-bold text-gray-700">Day ${day}</th>`).join('')}
-                                        </tr>
-                                        <tr>
-                                            <th class="h-6 sticky top-8 left-0 z-30 bg-gray-50 border-b-2 border-r border-gray-300 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] p-1 text-[10px] text-center font-bold text-gray-600 uppercase tracking-wide">Period</th>
-                                            ${[0,1,2,3,4,5].map(d => teachers.map(t => `<th class="h-6 sticky top-8 z-20 bg-gray-100 border-b-2 border-r border-gray-300 text-[9px] font-semibold text-gray-500 w-[64px] min-w-[64px] max-w-[64px] truncate px-1" title="${escapeHtml(t.name)}">${escapeHtml(t.name.split(' ')[0])}</th>`).join('')).join('')}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                        <div class="flex-1 overflow-auto bg-gray-200 p-4 print:p-0 print:bg-white print:overflow-visible">
                     `;
                     
-                    [0,1,2,3,4,5].forEach(p => {
-                        html += `<tr class="hover:bg-indigo-50 group">
-                            <td class="sticky left-0 z-10 bg-white group-hover:bg-indigo-50 border-r border-gray-300 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] p-1.5 px-2 font-bold text-[10px] text-gray-800 text-center ${p !== 5 ? 'border-b' : ''}">P${p+1}</td>`;
-                        
-                        for(let d=0; d<6; d++) {
-                            teachers.forEach((t, tIndex) => {
-                                const isLastTeacher = tIndex === teachers.length - 1;
-                                const cellData = t.schedule[p][d];
-                                const styles = getCellStyles(cellData);
-                                html += `<td class="p-0 align-middle ${p !== 5 ? 'border-b border-gray-200' : ''} ${isLastTeacher ? 'border-r-2 border-r-gray-300' : 'border-r border-gray-200'}">
-                                    <div draggable="true" ondragstart="handleDragStart(event, '${t.id}', ${p}, ${d})" ondragend="handleDragEnd(event)" ondragover="handleDragOver(event)" ondragenter="handleDragEnter(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, '${t.id}', ${p}, ${d})" onclick="startEdit(this, '${t.id}', ${p}, ${d}, true)" class="w-full h-full flex items-center justify-center transition-colors cursor-pointer ${styles} p-1 text-[9px] font-medium min-h-[32px] overflow-hidden whitespace-nowrap" title="${cellData.text ? 'Click to edit: '+escapeHtml(cellData.text) : 'Click to add class'}">
-                                        <span class="block w-[56px] truncate">${escapeHtml(cellData.text) || ''}</span>
-                                    </div>
-                                </td>`;
-                            });
-                        }
-                        html += `</tr>`;
-                    });
-                    html += `</tbody></table></div></div>`;
-
-                    // --- PRINT ONLY LAYOUT (BY TEACHER - 6 pages, 1 per day) ---
-                    let printHtml = `<div class="hidden print:block w-full p-0 bg-white">`;
-                    
                     [0,1,2,3,4,5].forEach((d, index) => {
-                        const pageBreak = index > 0 ? 'page-break-before: always; break-before: page;' : '';
-                        printHtml += `
-                            <div style="${pageBreak}" class="w-full">
-                                <div class="mb-4 flex items-center justify-between">
-                                    <div>
-                                        <h1 class="text-2xl font-extrabold text-gray-800 uppercase tracking-tight">Master Grid (Day ${d+1})</h1>
-                                        <p class="text-sm text-gray-500">${escapeHtml(appSettings.schoolName)} | ${escapeHtml(appSettings.schoolYear)}</p>
-                                    </div>
+                        html += `
+                            <div class="bg-white border border-gray-300 shadow-sm mb-8 print:border-none print:shadow-none print:mb-0 ${index > 0 ? 'print-page-break' : ''} w-max min-w-full print:w-full">
+                                <div class="px-4 py-3 border-b bg-gray-50 flex items-center justify-between print:hidden">
+                                    <h2 class="font-bold text-gray-700">Day ${d+1}</h2>
                                 </div>
-                                <table class="border-collapse w-full mb-8 table-fixed">
+                                <div class="hidden print:block mb-4">
+                                    <h1 class="text-2xl font-extrabold text-gray-800 uppercase tracking-tight">Master Grid (Day ${d+1})</h1>
+                                    <p class="text-sm text-gray-500">${escapeHtml(appSettings.schoolName)} | ${escapeHtml(appSettings.schoolYear)}</p>
+                                </div>
+                                <table class="border-collapse min-w-full table-fixed">
                                     <thead>
                                         <tr>
-                                            <th class="h-6 bg-gray-50 border-b-2 border-r border-gray-300 p-1 text-[10px] text-center px-1 font-bold text-gray-600 uppercase tracking-wide w-[40px]">Per</th>
-                                            ${teachers.map(t => `<th class="h-6 bg-gray-100 border-b-2 border-r border-gray-300 text-[8.5px] font-semibold text-gray-500 px-0.5 truncate overflow-hidden" title="${escapeHtml(t.name)}">${escapeHtml(t.name.split(' ')[0])}</th>`).join('')}
+                                            <th class="h-8 sticky top-0 left-0 z-30 bg-gray-50 border-b-2 border-r border-gray-300 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] p-1 text-[10px] text-center px-1 font-bold text-gray-600 uppercase tracking-wide w-[40px] min-w-[40px] max-w-[40px]">Per</th>
+                                            ${teachers.map(t => `<th class="h-8 sticky top-0 z-20 bg-gray-100 border-b-2 border-r border-gray-300 text-[8.5px] font-semibold text-gray-500 px-0.5 truncate overflow-hidden min-w-[56px] w-[56px]" title="${escapeHtml(t.name)}">${escapeHtml(t.name.split(' ')[0])}</th>`).join('')}
                                         </tr>
                                     </thead>
                                     <tbody>
                         `;
                         [0,1,2,3,4,5].forEach(p => {
-                            printHtml += `<tr>
-                                <td class="bg-white border-r border-gray-300 p-1 text-center font-bold text-[10px] text-gray-800 ${p !== 5 ? 'border-b border-gray-200' : ''}">P${p+1}</td>`;
+                            html += `<tr class="hover:bg-indigo-50 group">
+                                <td class="sticky left-0 z-10 bg-white group-hover:bg-indigo-50 border-r border-gray-300 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] p-1 text-center font-bold text-[10px] text-gray-800 ${p !== 5 ? 'border-b' : ''}">P${p+1}</td>`;
                             teachers.forEach((t, tIndex) => {
                                 const isLastTeacher = tIndex === teachers.length - 1;
                                 const cellData = t.schedule[p][d];
                                 const styles = getCellStyles(cellData);
-                                printHtml += `<td class="p-0 align-middle overflow-hidden ${p !== 5 ? 'border-b border-gray-200' : ''} ${isLastTeacher ? 'border-r-2 border-r-gray-300' : 'border-r border-gray-200'}">
-                                    <div class="w-full h-full flex items-center justify-center ${styles} p-0.5 text-[8px] font-medium min-h-[32px] overflow-hidden">
+                                html += `<td class="p-0 align-middle overflow-hidden ${p !== 5 ? 'border-b border-gray-200' : ''} ${isLastTeacher ? 'border-r-2 border-r-gray-300' : 'border-r border-gray-200'}">
+                                    <div draggable="true" ondragstart="handleDragStart(event, '${t.id}', ${p}, ${d})" ondragend="handleDragEnd(event)" ondragover="handleDragOver(event)" ondragenter="handleDragEnter(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, '${t.id}', ${p}, ${d})" onclick="startEdit(this, '${t.id}', ${p}, ${d}, true)" class="w-full h-full flex items-center justify-center transition-colors cursor-pointer ${styles} p-0.5 text-[8px] font-medium min-h-[32px] overflow-hidden" title="${cellData.text ? 'Click to edit: '+escapeHtml(cellData.text) : 'Click to add class'}">
                                         <span class="block w-full text-center truncate px-0.5">${escapeHtml(cellData.text) || ''}</span>
                                     </div>
                                 </td>`;
                             });
-                            printHtml += `</tr>`;
+                            html += `</tr>`;
                         });
-                        printHtml += `</tbody></table></div>`;
+                        html += `</tbody></table></div>`;
                     });
-                    printHtml += `</div>`;
-
-                    return html + printHtml;
+                    
+                    html += `</div>`;
+                    return html;
                 }
             }
         }
@@ -748,6 +676,10 @@
                     }
                     th, td {
                         position: static !important;
+                    }
+                    .print-page-break {
+                        page-break-before: always;
+                        break-before: page;
                     }
                 }
             `;
