@@ -24,7 +24,7 @@
         // --- DATA & STATE ---
         const generateEmptyGrid = () => Array(6).fill(null).map(() => Array(6).fill(''));
 
-        let teachers = [
+        const initialTeachers = [
           { id: '1', name: 'CAREY', schedule: [['ADMIN', 'ADMIN', 'ADMIN', 'ADMIN', 'ENVRIO 20/BIO 30', 'ADMIN'], ['ADMIN', 'ADMIN', 'ADMIN', 'ADMIN', 'ADMIN', 'ADMIN'], ['ADMIN', 'ADMIN', 'ADMIN', 'ADMIN', 'ADMIN', 'ADMIN'], ['ADMIN', 'ADMIN', 'ADMIN', 'ADMIN', 'ADMIN', 'ADMIN'], ['ENVRIO 20/BIO 30', 'ENVRIO 20/BIO 30', 'ENVRIO 20/BIO 30', 'ENVRIO 20/BIO 30', 'ENVRIO 20/BIO 30', 'ENVRIO 20/BIO 30'], ['ADMIN', 'ADMIN', 'ADMIN', 'ADMIN', 'ADMIN', 'ADMIN']] },
           { id: '2', name: 'HOULT', schedule: [['MATH 30', 'PREP', 'MATH 20', 'PREP', 'PREP', 'MATH 20'], ['MATH 20', 'MATH 30', 'MATH 30', 'MATH 20', 'MATH 20', 'MATH 20'], ['MATH 30', 'MATH 20', 'MATH 20/30', 'MATH 30', 'MATH 30', 'MATH 30'], ['CLASS COMP', 'CLASS COMP', 'CLASS COMP', 'CLASS COMP', 'CLASS COMP', 'CLASS COMP'], ['CLASS COMP', 'CLASS COMP', 'CLASS COMP', 'CLASS COMP', 'CLASS COMP', 'CLASS COMP'], ['CLASS COMP', 'CLASS COMP', 'CLASS COMP', 'CLASS COMP', 'CLASS COMP', 'CLASS COMP']] },
           { id: '3', name: 'HAYES M', schedule: [['ENGLISH 20/FIN LIT 10', 'PREP', 'ENGLISH 30', 'PREP', 'PHYS ED 7/8', 'ENGLISH 30'], ['ENGLISH 30', 'ENGLISH 20/FIN LIT 10', 'ENGLISH 20/FIN LIT 10', 'ENGLISH 30', 'ENGLISH 30', 'ENGLISH 30'], ['ENGLISH 20/FIN LIT 10', 'ENGLISH 30', 'ENGLISH 9/10', 'ENGLISH 20/FIN LIT 10', 'ENGLISH 20/FIN LIT 10', 'ENGLISH 20/FIN LIT 10'], ['SOCIAL 5/6', 'ENGLISH 9/10', 'SOCIAL 5/6', 'PREP', 'SOCIAL 5/6', 'ENGLISH 9/10'], ['PHYS ED 1/2', 'PHYS ED 7/8', 'PHYS ED 1/2', 'PHYS ED 7/8', 'PHYS ED 1/2', 'PHYS ED 7/8'], ['ENGLISH 9/10', 'ENGLISH 9/10', 'HEALTH 7/8', 'ENGLISH 9/10', 'ENGLISH 9/10', 'HEALTH 7/8']] },
@@ -45,6 +45,9 @@
           { id: '18', name: 'LAROCK', schedule: generateEmptyGrid() },
           { id: '19', name: 'NUNWEILER', schedule: generateEmptyGrid() }
         ];
+
+        // Load from local storage, fallback to initial PDF data
+        let teachers = JSON.parse(localStorage.getItem('masterTimetableData')) || initialTeachers;
 
         let selectedId = teachers[0].id;
         let viewMode = 'single'; // 'single' or 'master'
@@ -74,6 +77,10 @@
         }
 
         // --- ACTIONS ---
+        function saveData() {
+            localStorage.setItem('masterTimetableData', JSON.stringify(teachers));
+        }
+
         window.switchView = function(mode) {
             viewMode = mode;
             renderApp();
@@ -90,6 +97,7 @@
             teachers.push({ id: newId, name: 'NEW TEACHER', schedule: generateEmptyGrid() });
             selectedId = newId;
             viewMode = 'single';
+            saveData();
             renderApp();
         };
 
@@ -98,6 +106,7 @@
             if (confirm(`Are you sure you want to delete ${getTeacher().name}?`)) {
                 teachers = teachers.filter(t => t.id !== selectedId);
                 selectedId = teachers[0].id;
+                saveData();
                 renderApp();
             }
         };
@@ -126,6 +135,7 @@
                     if (Array.isArray(importedData)) {
                         teachers = importedData;
                         selectedId = importedData[0]?.id || '';
+                        saveData();
                         renderApp();
                     } else {
                         alert('Invalid file format. Please upload a valid backup JSON file.');
@@ -155,6 +165,7 @@
             
             input.onblur = function() {
                 teacher.schedule[p][d] = this.value.toUpperCase();
+                saveData();
                 renderApp();
             };
             input.onkeydown = function(e) {
@@ -389,6 +400,7 @@
             if (nameInput) {
                 nameInput.addEventListener('input', (e) => {
                     getTeacher().name = e.target.value.toUpperCase();
+                    saveData();
                     // Only update the sidebar to reflect the new name, keeping focus in the input
                     document.getElementById('sidebar-container').innerHTML = getSidebarHtml();
                 });
