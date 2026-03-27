@@ -4,23 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Master Timetable Manager</title>
-    <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style id="dynamic-print-style"></style>
 </head>
 <body class="bg-gray-50 font-sans text-gray-800 print:bg-white print:h-auto overflow-hidden print:overflow-visible">
 
-    <!-- App Container -->
     <div id="app" class="flex h-screen print:h-auto print:block">
-        <!-- Sidebar and Main Area will be injected here by Javascript -->
         <div id="sidebar-container" class="w-64 bg-white border-r flex flex-col shadow-sm z-40 flex-shrink-0 print:hidden"></div>
         <div id="main-container" class="flex-1 flex flex-col overflow-hidden bg-gray-100 print:bg-white print:overflow-visible print:block"></div>
     </div>
 
-    <!-- Settings Modal -->
     <div id="settings-modal" class="fixed inset-0 bg-black bg-opacity-50 z-[100] hidden flex items-center justify-center">
         <div class="bg-white rounded-lg shadow-xl w-[400px] flex flex-col">
             <div class="p-4 border-b flex justify-between items-center bg-gray-50 rounded-t-lg">
@@ -234,10 +229,18 @@
                     const valToCopy = sourceTeacher.schedule[dragSource.p][dragSource.d];
                     const targetCell = targetTeacher.schedule[targetP][targetD];
                     
-                    if (targetCell.text !== valToCopy.text || targetCell.color !== valToCopy.color) {
-                        saveStateToHistory();
-                        // Clone the object so references don't break
-                        targetTeacher.schedule[targetP][targetD] = { text: valToCopy.text, color: valToCopy.color };
+                    const sourceText = typeof valToCopy === 'string' ? valToCopy : valToCopy.text;
+                    const sourceColor = typeof valToCopy === 'string' ? 'default' : valToCopy.color;
+                    
+                    const targetText = typeof targetCell === 'string' ? targetCell : targetCell.text;
+                    const targetColor = typeof targetCell === 'string' ? 'default' : targetCell.color;
+                    
+                    if (targetText !== sourceText || targetColor !== sourceColor) {
+                        saveStateToHistory(); 
+                        targetTeacher.schedule[targetP][targetD] = { 
+                            text: sourceText, 
+                            color: sourceColor 
+                        };
                         saveData();
                         renderApp();
                     }
@@ -355,9 +358,8 @@
             
             const input = document.getElementById('inline-edit-input');
             input.focus();
-            input.select(); // Highlight text instantly so typing overwrites (spreadsheet feel)
+            input.select(); 
             
-            // Save if they click outside (defaults to whatever color it already had)
             input.onblur = () => applyInlineEdit(tId, p, d, cellData.color);
             input.onkeydown = (e) => { if(e.key === 'Enter') input.blur(); };
         };
@@ -493,7 +495,6 @@
                 html += `
                     <div class="flex-1 p-8 overflow-auto print:p-0 print:overflow-visible">
                         
-                        <!-- Print-Only Header -->
                         <div class="hidden print:block mb-8 text-center w-full max-w-7xl mx-auto">
                             <h1 class="text-3xl font-extrabold text-gray-800 uppercase tracking-tight">${escapeHtml(t.name)}'S TIMETABLE</h1>
                             <p class="text-base text-gray-500 mt-1 uppercase tracking-wide">${escapeHtml(appSettings.schoolName)} &bull; ${escapeHtml(appSettings.schoolYear)}</p>
@@ -597,7 +598,7 @@
 
                     // --- PRINT ONLY LAYOUT (BY PERIOD - Splits into 2 pages) ---
                     let printHtml = `<div class="hidden print:block w-full p-0 bg-white">`;
-                    const chunks = [ [0,1,2], [3,4,5] ]; // Split into Days 1-3, and Days 4-6
+                    const chunks = [ [0,1,2], [3,4,5] ]; 
                     
                     chunks.forEach((chunk, index) => {
                         const pageBreak = index > 0 ? 'page-break-before: always; break-before: page;' : '';
