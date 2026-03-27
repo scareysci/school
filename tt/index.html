@@ -81,6 +81,55 @@
             localStorage.setItem('masterTimetableData', JSON.stringify(teachers));
         }
 
+        // --- DRAG AND DROP LOGIC ---
+        let dragSource = null;
+
+        window.handleDragStart = function(e, tId, p, d) {
+            dragSource = { tId, p, d };
+            e.dataTransfer.effectAllowed = 'copy';
+            e.dataTransfer.setData('text/plain', 'timetable-cell');
+            // Make the source tile slightly transparent while dragging
+            e.target.style.opacity = '0.4'; 
+        };
+
+        window.handleDragEnd = function(e) {
+            e.target.style.opacity = '1';
+            dragSource = null;
+        };
+
+        window.handleDragOver = function(e) {
+            e.preventDefault(); // Necessary to allow dropping
+            e.dataTransfer.dropEffect = 'copy';
+            return false;
+        };
+
+        window.handleDragEnter = function(e) {
+            // Highlight the target cell so you know where it's dropping
+            e.currentTarget.classList.add('ring-4', 'ring-indigo-400', 'scale-105', 'z-10');
+        };
+
+        window.handleDragLeave = function(e) {
+            e.currentTarget.classList.remove('ring-4', 'ring-indigo-400', 'scale-105', 'z-10');
+        };
+
+        window.handleDrop = function(e, targetTId, targetP, targetD) {
+            e.stopPropagation();
+            e.currentTarget.classList.remove('ring-4', 'ring-indigo-400', 'scale-105', 'z-10');
+            
+            if (dragSource) {
+                const sourceTeacher = teachers.find(t => t.id === dragSource.tId);
+                const targetTeacher = teachers.find(t => t.id === targetTId);
+                
+                if (sourceTeacher && targetTeacher) {
+                    const valToCopy = sourceTeacher.schedule[dragSource.p][dragSource.d];
+                    targetTeacher.schedule[targetP][targetD] = valToCopy;
+                    saveData();
+                    renderApp();
+                }
+            }
+            return false;
+        };
+
         window.switchView = function(mode) {
             viewMode = mode;
             renderApp();
@@ -299,7 +348,7 @@
                         const styles = getCellStyles(val);
                         html += `
                             <div class="p-2 border-r last:border-0 bg-white hover:bg-gray-50 transition-colors flex items-center justify-center">
-                                <div onclick="startEdit(this, '${t.id}', ${p}, ${d}, false)" class="w-full h-full flex items-center justify-center transition-colors cursor-pointer ${styles} p-2 text-sm rounded border border-gray-200 shadow-sm min-h-[60px] font-medium" title="${val ? 'Click to edit: '+escapeHtml(val) : 'Click to add class'}">
+                                <div draggable="true" ondragstart="handleDragStart(event, '${t.id}', ${p}, ${d})" ondragend="handleDragEnd(event)" ondragover="handleDragOver(event)" ondragenter="handleDragEnter(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, '${t.id}', ${p}, ${d})" onclick="startEdit(this, '${t.id}', ${p}, ${d}, false)" class="w-full h-full flex items-center justify-center transition-colors cursor-pointer ${styles} p-2 text-sm rounded border border-gray-200 shadow-sm min-h-[60px] font-medium" title="${val ? 'Click to edit: '+escapeHtml(val) : 'Click to add class'}">
                                     <span>${escapeHtml(val) || 'Free'}</span>
                                 </div>
                             </div>
@@ -356,7 +405,7 @@
                             const val = t.schedule[p][d];
                             const styles = getCellStyles(val);
                             html += `<td class="p-0 align-middle ${!isLast ? 'border-b border-gray-200' : ''} ${p === 5 ? 'border-r-2 border-r-gray-300' : 'border-r border-gray-200'}">
-                                <div onclick="startEdit(this, '${t.id}', ${p}, ${d}, true)" class="w-full h-full flex items-center justify-center transition-colors cursor-pointer ${styles} p-1 text-[9px] font-medium min-h-[32px] overflow-hidden whitespace-nowrap" title="${val ? 'Click to edit: '+escapeHtml(val) : 'Click to add class'}">
+                                <div draggable="true" ondragstart="handleDragStart(event, '${t.id}', ${p}, ${d})" ondragend="handleDragEnd(event)" ondragover="handleDragOver(event)" ondragenter="handleDragEnter(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, '${t.id}', ${p}, ${d})" onclick="startEdit(this, '${t.id}', ${p}, ${d}, true)" class="w-full h-full flex items-center justify-center transition-colors cursor-pointer ${styles} p-1 text-[9px] font-medium min-h-[32px] overflow-hidden whitespace-nowrap" title="${val ? 'Click to edit: '+escapeHtml(val) : 'Click to add class'}">
                                     <span class="block w-[48px] truncate">${escapeHtml(val) || ''}</span>
                                 </div>
                             </td>`;
