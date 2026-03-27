@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eaton School Student & Parent Handbook 2024-2025</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        spartan: {
+                            red: '#E53E3E',
+                            black: '#1a202c',
+                            white: '#ffffff',
+                            gray: '#f7fafc'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Print Styles */
+        @media print {
+            body { background: white; color: black; }
+            .no-print { display: none !important; }
+            .print-break-inside-avoid { page-break-inside: avoid; break-inside: avoid; }
+            .print-break-before { page-break-before: always; break-before: always; }
+            #main-content { margin: 0; padding: 0; width: 100%; }
+            a { text-decoration: none; color: black; }
+            h1, h2, h3 { color: black; page-break-after: avoid; }
+            table { border-collapse: collapse; width: 100%; margin-bottom: 1rem; }
+            th, td { border: 1px solid #ccc; padding: 0.5rem; text-align: left; }
+        }
+        
+        /* Web layout adjustments */
+        html { scroll-padding-top: 2rem; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e0; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a0aec0; }
+        
+        .nav-active {
+            color: #E53E3E !important;
+            font-weight: 700;
+            border-left: 4px solid #E53E3E;
+            padding-left: 0.75rem;
+            background-color: #fff5f5;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased">
+
+    <!-- Mobile Header -->
+    <div class="md:hidden bg-spartan-black text-white p-4 flex justify-between items-center sticky top-0 z-50 shadow-md no-print">
+        <div class="font-bold text-lg">Eaton School Handbook</div>
+        <button id="mobile-menu-btn" class="text-white hover:text-spartan-red focus:outline-none">
+            <i class="fas fa-bars text-2xl"></i>
+        </button>
+    </div>
+
+    <div class="flex min-h-screen">
+        
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="w-64 bg-white shadow-xl fixed h-full overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-40 no-print border-r border-gray-200">
+            <div class="p-6">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-bold text-spartan-black uppercase tracking-wider">Eaton<br><span class="text-spartan-red">Spartans</span></h2>
+                    <p class="text-xs text-gray-500 mt-2 border-b pb-4">2024-2025 Handbook</p>
+                </div>
+                
+                <nav class="space-y-1 text-sm">
+                    <a href="#welcome" class="block py-2 px-3 text-gray-700 hover:bg-gray-50 hover:text-spartan-red rounded transition toc-link">Welcome & Mission</a>
+                    
+                    <div class="pt-4 pb-2 text-xs font-bold text-gray-400 uppercase tracking-wider">School Culture</div>
+                    <a href="#staff" class="block py-2 px-3 text-gray-700 hover:bg-gray-50 hover:text-spartan-red rounded transition toc-link">Eaton Staff</a>
+                    <a href="#code-of-conduct" class="block py-2 px-3 text-gray-700 hover:bg-gray-50 hover:text-spartan-red rounded transition toc-link">Code of Conduct</a>
+                    <a href="#spartan-pride" class="block py-2 px-3 text-gray-700 hover:bg-gray-50 hover:text-spartan-red rounded transition toc-link">Spartan Pride</a>
+                    <a href="#pebl" class="block py-2 px-3 text-gray-700 hover:bg-gray-50 hover:text-spartan-red rounded transition toc-link">PeBL at Eaton</a>
+
+                    <div class="pt-4 pb-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Academics & Programming</div>
+                    <a href="#academic-expectations" class="block py-2 px-3 text-gray-700 hover:bg-gray-50 hover:text-spartan-red rounded transition toc-link">Academic Expectations</a>
+                    <a href="#graduation" class="block py-2 px-3 text-gray-700 hover:bg-gray-50 hover:text-spartan-red rounded transition toc-link">Graduation Requirements</a>
+                    <a href="#course-selection" class="block py-2 px-3 text-gray-700 hover:bg-gray-50 hover:text-spartan-red rounded transition toc-link">Course Selection</a>
+                    <a href="#saskdlc" class="block py-2 px-3 text-gray-700 hover:bg-gray-50 hover:text-spartan-red rounded transition toc-link">SaskDLC Courses</a>
+                    <a href="#assignments" class="block py-2 px-3 text-gray-700 hover:bg-gray-50 hover:text-spartan-red rounded transition toc-link">Assignments & Exams</a>
+                    <a href="#band" class="block py-2 px-3 text-gray-700 hover:bg-gray-50 hover:text-spartan-red rounded transition toc-link">Band Program</a>
+                    <a href="#driver-ed" class="block py-2 px-3 text-gray-700 hover:bg-gray-50 hover:text-spartan-red rounded transition toc-link">Driver Education</a>
+
+                    <div class="pt-4 pb-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Assessment & Support</div>
+                    <a href="#assessment" class="block py-2 px-3 text-gray-700 hover:bg-gray-50 hover:text-spartan-red rounded transition toc-link">Edsby & Rubrics</a>
+                    <a href="#fasa" class="block py-2 px-3 text-gray-700 hover:bg-gray-50 hover:text-spartan-red rounded transition toc-link">FASAs</a>
+                    <a href="#report-cards" class="block py-2 px-3 text-gray-700 hover:bg-gray-50 hover:text-spartan-red rounded transition toc-link">Report Cards & Conferences</a>
+                    <a href="#student-support" class="block py-2 px-3 text-gray-700 hover:bg-gray-50 hover:text-spartan-red rounded transition toc-link">Student Support</a>
+
+                    <div class="pt-4 pb-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Operations & Policies</div>
+                    <a href="#communication" class="block py-2 px-3 text-gray-700 hover:bg-gray-50 hover:text-spartan-red rounded transition toc-link">Communication</a>
+                    <a href="#operations" class="block py-2 px-3 text-gray-700 hover:bg-gray-50 hover:text-spartan-red rounded transition toc-link">Operations & Bell Times</a>
+                    <a href="#policies" class="block py-2 px-3 text-gray-700 hover:bg-gray-50 hover:text-spartan-red rounded transition toc-link">Policies (Attendance, Phones)</a>
+                    <a href="#procedures" class="block py-2 px-3 text-gray-700 hover:bg-gray-50 hover:text-spartan-red rounded transition toc-link">Procedures</a>
+                    <a href="#wellness" class="block py-2 px-3 text-gray-700 hover:bg-gray-50 hover:text-spartan-red rounded transition toc-link">Wellness & Transportation</a>
+
+                    <div class="pt-4 pb-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Extracurricular</div>
+                    <a href="#leadership" class="block py-2 px-3 text-gray-700 hover:bg-gray-50 hover:text-spartan-red rounded transition toc-link">Leadership (SRC, SCC)</a>
+                    <a href="#athletics" class="block py-2 px-3 text-gray-700 hover:bg-gray-50 hover:text-spartan-red rounded transition toc-link">Athletics & Clubs</a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Overlay for mobile sidebar -->
+        <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden md:hidden no-print"></div>
+
+        <!-- Main Content -->
+        <main id="main-content" class="flex-1 md:ml-64 p-6 lg:p-12 max-w-5xl mx-auto w-full bg-white min-h-screen shadow-sm">
+            
+            <!-- Floating Print Button -->
+            <div class="flex justify-end mb-8 no-print sticky top-4 z-10">
+                <button onclick="window.print()" class="bg-spartan-red text-white px-4 py-2 rounded shadow hover:bg-red-700 transition flex items-center">
+                    <i class="fas fa-print mr-2"></i> Print Handbook
+                </button>
+            </div>
+
+            <!-- Content Start -->
+            <article class="prose prose-slate max-w-none">
+                
+                <!-- Welcome Section -->
+                <section id="welcome" class="text-center mb-16 print-break-inside-avoid">
+                    <h1 class="text-4xl md:text-5xl font-black text-spartan-black mb-4">SUN WEST SCHOOL DIVISION</h1>
+                    <h2 class="text-3xl md:text-4xl font-bold text-spartan-red mb-2 uppercase border-b-4 border-spartan-red inline-block pb-2">Eaton School</h2>
+                    <h3 class="text-2xl font-semibold text-gray-600 mb-8">Student & Parent Handbook 2024-2025</h3>
+                    
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-sm inline-block text-left border border-gray-200">
+                        <p class="mb-1"><i class="fas fa-map-marker-alt text-spartan-red mr-2"></i> Box 190, 410-1st St. E. Eatonia, SK S0L 0Y0</p>
+                        <p class="mb-1"><i class="fas fa-phone text-spartan-red mr-2"></i> (306) 967-2536</p>
+                        <p class="mb-1"><i class="fas fa-fax text-spartan-red mr-2"></i> (306) 967-2580</p>
+                        <p class="mb-1"><i class="fas fa-globe text-spartan-red mr-2"></i> <a href="http://www.sunwestsd.ca/eaton" class="text-blue-600 hover:underline">www.sunwestsd.ca/eaton</a></p>
+                        <p class="mb-1"><i class="fab fa-facebook text-spartan-red mr-2"></i> Eaton School (Facebook)</p>
+                        <p><i class="fab fa-twitter text-spartan-red mr-2"></i> @eatonspartans (Twitter, Instagram)</p>
+                    </div>
+
+                    <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+                        <div class="bg-spartan-red text-white p-6 rounded-lg shadow">
+                            <h3 class="text-xl font-bold mb-2">Our Vision:</h3>
+                            <p class="text-lg">Excellence Through Education</p>
+                        </div>
+                        <div class="bg-spartan-black text-white p-6 rounded-lg shadow">
+                            <h3 class="text-xl font-bold mb-2">Our Mission:</h3>
+                            <p>Engage, Empower, and Equip students to become life-long learners and responsible 21st Century citizens in a global society.</p>
+                        </div>
+                    </div>
+                    <p class="mt-8 text-sm text-gray-500 italic">Updated October 4, 2024<br>*Please note this is a living document and as such, is subject to change.</p>
+                </section>
+
+                <hr class="my-12 border-gray-300">
+
+                <!-- School Culture -->
+                <section id="culture" class="mb-12">
+                    <h2 class="text-3xl font-bold text-spartan-black border-b-2 border-spartan-red pb-2 mb-6">School Culture</h2>
+                    
+                    <h3 id="staff" class="text-2xl font-semibold mb-4 text-spartan-red mt-8">Eaton Staff</h3>
+                    <div class="overflow-x-auto print-break-inside-avoid">
+                        <table class="min-w-full text-sm text-left text-gray-700 border border-gray-300">
+                            <thead class="bg-gray-100 font-bold text-gray-900 border-b border-gray-300">
+                                <tr>
+                                    <th class="px-4 py-2 w-1/3">Teaching Staff</th>
+                                    <th class="px-4 py-2">Teaching Assignments</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr><td class="px-4 py-2 font-semibold">Lisa King</td><td class="px-4 py-2">Principal, Student Support K-12</td></tr>
+                                <tr><td class="px-4 py-2 font-semibold">Harmony Palaschak</td><td class="px-4 py-2">Kindergarten (Days 2, 4, 6)</td></tr>
+                                <tr><td class="px-4 py-2 font-semibold">Nikita May</td><td class="px-4 py-2">Grade 1/2</td></tr>
+                                <tr><td class="px-4 py-2 font-semibold">Megan McKinnon</td><td class="px-4 py-2">Grade 3/4</td></tr>
+                                <tr><td class="px-4 py-2 font-semibold">Nichole Bredy</td><td class="px-4 py-2">Grade 5/6 ELA/Math/Arts Ed/Health, PAA 7-12, Structured Literacy Gr 3/4, Social Emotional Learning Gr 1-6</td></tr>
+                                <tr><td class="px-4 py-2 font-semibold">Graeme Wilgosh</td><td class="px-4 py-2">Math 7/8 & 9, English 7/8, Social 7/8 & 9, STEAM 7/8/9, History 10</td></tr>
+                                <tr><td class="px-4 py-2 font-semibold">Megan Hayes</td><td class="px-4 py-2">English 9/10, 20 & 30; Financial Literacy 10; Health 7/8 & 9; Phys Ed 7/8 Social 5/6</td></tr>
+                                <tr><td class="px-4 py-2 font-semibold">Michael Hoult</td><td class="px-4 py-2">Math 10-12 Work & Apprenticeship/Foundations/Pre-Calculus, Physical Science 20, Health Science 20, Chemistry 30, Physics 30</td></tr>
+                                <tr><td class="px-4 py-2 font-semibold">Diedra Whitell</td><td class="px-4 py-2">Grade 1-4 Music, Band 5 & 6, Jr Band (Gr 7-8) & Sr Band (Gr 9-12), Student Support K-12, Structured Literacy Gr 1/2, STEAM 7/8/9</td></tr>
+                                <tr><td class="px-4 py-2 font-semibold">Clint Hayes</td><td class="px-4 py-2">PAA 7-12, STEAM 7/8/9, PE 5/6 & 9-12, Science 5-10 & Athletic Director</td></tr>
+                                <tr><td class="px-4 py-2 font-semibold">Sherry Brewer</td><td class="px-4 py-2">Careers 7/8 & 9, CWEX 10 & 30, Careers Counsellor, STEAM 7/8/9</td></tr>
+                            </tbody>
+                            <thead class="bg-gray-100 font-bold text-gray-900 border-b border-gray-300 border-t-4">
+                                <tr>
+                                    <th class="px-4 py-2 w-1/3">Support Staff</th>
+                                    <th class="px-4 py-2">Assignments</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr><td class="px-4 py-2 font-semibold">Kathy Hoffman / Tracy Radies</td><td class="px-4 py-2">Administrative Assistant</td></tr>
+                                <tr><td class="px-4 py-2 font-semibold">Charlene Coventry</td><td class="px-4 py-2">Librarian and Online Learning Facilitator</td></tr>
+                                <tr><td class="px-4 py-2 font-semibold">Candice Connolly</td><td class="px-4 py-2">Educational Assistant</td></tr>
+                                <tr><td class="px-4 py-2 font-semibold">Naomi Green</td><td class="px-4 py-2">Educational Assistant</td></tr>
+                                <tr><td class="px-4 py-2 font-semibold">Lindsay Larock</td><td class="px-4 py-2">Educational Assistant</td></tr>
+                                <tr><td class="px-4 py-2 font-semibold">Markayla McKay</td><td class="px-4 py-2">Educational Assistant</td></tr>
+                                <tr><td class="px-4 py-2 font-semibold">Julie Nunweiler</td><td class="px-4 py-2">Educational Assistant</td></tr>
+                                <tr><td class="px-4 py-2 font-semibold">Cassie Stimson</td><td class="px-4 py-2">Educational Assistant</td></tr>
+                                <tr><td class="px-4 py-2 font-semibold">Jennifer McKenzie / Shelly Eckstein</td><td class="px-4 py-2">Custodian</td></tr>
+                                <tr><td class="px-4 py-2 font-semibold">Sarah Becker / Dale Bredy / Sharon Steinke</td><td class="px-4 py-2">Bus Drivers</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="print-break-before mt-12"></div>
+
+                    <h3 id="code-of-conduct" class="text-2xl font-semibold mb-4 text-spartan-red mt-8">Spartan Code of Conduct</h3>
+                    <div class="bg-gray-50 border border-gray-200 p-6 rounded shadow-sm print-break-inside-avoid">
+                        <p class="font-bold text-center italic">"Excellence through Education"</p>
+                        <p class="text-center mb-6">At Eaton School, all members of our school community believe that:</p>
+                        <ol class="list-decimal list-inside space-y-2 mb-6 ml-4">
+                            <li>We will demonstrate respect for ourselves, others, and our school.</li>
+                            <li>We will create an environment that is positive, safe, and inclusive.</li>
+                            <li>We will treat others as equals with dignity and respect.</li>
+                            <li>We will strive to develop an image of a proud, enthusiastic student body, which excels in all areas of our school environment.</li>
+                        </ol>
+                        
+                        <h4 class="font-bold text-lg border-b pb-1 mb-4">STRIVING FOR EXCELLENCE IN EDUCATION AT EATON</h4>
+                        <p class="italic mb-4">Eaton students will strive for Excellence by being responsible for their Choices, Words, Actions, Grades, and Successes, and the resulting consequences.</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                                <h5 class="font-bold text-spartan-red mb-2">RESPECT: self, others, property</h5>
+                                <h6 class="font-semibold underline">SOUNDS LIKE</h6>
+                                <ul class="list-disc list-inside text-sm space-y-1 mb-4">
+                                    <li>Use respectful language: verbal and body language</li>
+                                    <li>Be polite, Be kind</li>
+                                    <li>Use appropriate language</li>
+                                    <li>Keep conversations at an acceptable level</li>
+                                    <li>Participate in class discussions and activities</li>
+                                </ul>
+                                <h6 class="font-semibold underline">LOOKS LIKE</h6>
+                                <ul class="list-disc list-inside text-sm space-y-1">
+                                    <li>Follow the rules without being asked or reminded</li>
+                                    <li>Choose appropriate behaviours that allow ALL to learn</li>
+                                    <li>Choose appropriate behaviours throughout the school</li>
+                                    <li>Act with honour</li>
+                                    <li>Respect yourself: take care of your body, mind and spirit</li>
+                                    <li>Everyone should feel safe</li>
+                                    <li>Show empathy, try to understand how others feel and what his or her life is like</li>
+                                    <li>Respect the property and equipment of others and the school</li>
+                                    <li>Respect the space of others in the classroom, halls, and outdoor spaces including the parking lot and playground</li>
+                                    <li>Listen the first time so directions don't need to be repeated</li>
+                                    <li>Wait for your turn and to be acknowledged</li>
+                                    <li>Try your hardest</li>
+                                    <li>Clean up after yourself: garbage, recycle</li>
+                                    <li>Have confidence</li>
+                                    <li>Follow school expectations regarding dress code</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-spartan-red mb-2">RESPONSIBILITIES</h5>
+                                <ul class="list-disc list-inside text-sm space-y-1">
+                                    <li>Be punctual - on time</li>
+                                    <li>Attend class regularly</li>
+                                    <li>Be prepared - bring all necessary materials</li>
+                                    <li>Follow directions</li>
+                                    <li>Use class time appropriately, Be on task</li>
+                                    <li>Be organized and neat</li>
+                                    <li>Set a positive example, Self monitor</li>
+                                    <li>Meet deadlines, Complete assigned work, Do homework</li>
+                                    <li>If absent, find out what you missed and catch up on missed assignments</li>
+                                    <li>Ask for help/ ask questions</li>
+                                    <li>Have a positive attitude</li>
+                                    <li>Appropriately use devices as tools</li>
+                                    <li>Admit to mistakes</li>
+                                    <li>Be safe and fair, Be honest</li>
+                                    <li>Pay attention to posters, announcements and whiteboard messages</li>
+                                    <li>Take care of your property</li>
+                                    <li>Help others when they need it</li>
+                                    <li>Follow through with what you have been asked to do</li>
+                                    <li>Try new things</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 id="spartan-pride" class="text-2xl font-semibold mb-4 text-spartan-red mt-10">Spartan Pride</h3>
+                    <div class="flex flex-col md:flex-row items-center bg-gray-50 p-6 rounded shadow-sm border border-gray-200 print-break-inside-avoid">
+                        <div class="md:w-1/2 pr-4">
+                            <p class="mb-2"><strong class="text-spartan-black">School Colours:</strong> Red, black & white with a Spartan logo.</p>
+                            <p class="mb-2"><strong class="text-spartan-black">School Cheer:</strong> "We... are.... SPARTA!"</p>
+                            <div class="mt-4 p-4 border-l-4 border-spartan-red bg-white">
+                                <h4 class="font-bold text-xl mb-2 text-center border-b pb-2">SPARTAN CHEER</h4>
+                                <p class="text-center italic text-lg leading-relaxed">
+                                    Eaton High! Eaton High!<br>
+                                    Black and white flying high!<br>
+                                    Watch us rip, watch us tear,<br>
+                                    Win or lose, we play fair!<br>
+                                    Yeah, Eatonia!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 id="pebl" class="text-2xl font-semibold mb-4 text-spartan-red mt-10">PeBL at Eaton School FAQ</h3>
+                    <div class="space-y-4 text-sm text-gray-800 print-break-inside-avoid">
+                        <div>
+                            <strong class="text-lg text-spartan-black">What is PeBL?</strong>
+                            <p>PeBL is Personalized electronic-based Blended Learning. It is similar to differentiated instruction, but at a higher level. Through self-awareness and self-discovery of their own learning styles (by building learner profiles), students will become empowered to take control of their own learning and become more engaged in the learning process. PeBL is also designed to help students develop and utilize 21st Century skills and FASAs which will help them in their work now and in the future.</p>
+                        </div>
+                        <div>
+                            <strong class="text-lg text-spartan-black">What will PeBL look like in the classroom?</strong>
+                            <p class="mt-2"><span class="font-bold underline">Environment:</span> In classrooms and throughout the school there are a variety of learning environments such as desks, tables, group spaces, safe spaces, and more. The Spartan Outdoor Educational Space offers outdoor learning opportunities to our students and in addition, lets teachers focus on agriculture and horticulture. Flex Seating Expectations for students working in these environments are:</p>
+                            <ul class="list-none pl-6 mt-2 font-bold font-mono">
+                                <li><span class="text-spartan-red">S</span> Sit where you work best</li>
+                                <li><span class="text-spartan-red">P</span> Properly Seated</li>
+                                <li><span class="text-spartan-red">A</span> Always working....if not....move</li>
+                                <li><span class="text-spartan-red">R</span> Respect other learners</li>
+                                <li><span class="text-spartan-red">T</span> Teacher & EA always reserve the right to move anyone</li>
+                                <li><span class="text-spartan-red">A</span> Always ask before working outside of the classroom</li>
+                            </ul>
+                            <p class="mt-4"><span class="font-bold underline">Instruction:</span> Instruction will be planned by the classroom teacher and will be learner centered. Face-to-face instruction will be supplemented with varying resources including, but not limited to, electronic devices, Makerspace, Study Forge, Moodle, apps, etc. Instruction will still adhere to the outcomes of the Saskatchewan Learning Curriculum and will take into consideration Learner Profiles and learning styles (Kinesthetic, Visual, Auditory). PeBL does not mean an online course and there will still be as much face-to-face student-teacher contact as always. With student learning needs taken into consideration, the elements of student voice, choice, pace and place will be teacher guided. This platform will allow for greater individualized learning and collaborative opportunities to meet each student's needs. In a personalized environment, students take on an increasing responsibility for their learning. A deliberate and gradual Transfer of Responsibility from I Do to We Do to You Do results in more engage learning, higher motivation levels and greater success.</p>
+                            <p class="mt-4"><span class="font-bold underline">Assessment:</span> Assessment naturally flows from the way instruction is individualized. Student will be assessed based on the curricular outcomes in a variety of formats. Assignments and projects may be cross-curricular and could include outcomes from more than one subject area.</p>
+                        </div>
+                        <div>
+                            <strong class="text-lg text-spartan-black">What will be the same and what will be different for my child?</strong>
+                            <p>Students will develop a growth mindset with the goal of becoming life-long learners. They will realize that as a learner it is okay to make mistakes or fail and that what is most important is that they learn from those experiences and grow. Students will be able to work at an individual pace with teacher guidance but will still be expected to complete the Saskatchewan curriculum outcomes.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <hr class="my-12 border-gray-300">
+
+                <!-- Academics & Programming -->
+                <section id="academics" class="mb-12">
+                    <h2 class="text-3xl font-bold text-spartan-black border-b-2 border-spartan-red pb-2 mb-6">Academics & Programming</h2>
+                    <p class="mb-4">Eaton School is a K-12 School within the Sun West School Division which offers a comprehensive set of course offerings, including the traditional academic subjects: English, Math, Science, Biology, Chemistry, Environmental Science, Health Science, Physical Science, Physics, Social Studies, History, as well as Arts Ed, Physical Education, Health, Band, Practical & Applied Arts, STEAM classes, and Work Experience.</p>
+                    <p class="mb-6">Students in Grades 10-12 also have access to the Sask Distance Learning Center (SDLC), Saskatchewan's largest online school with over 120 online courses available.</p>
+
+                    <h3 id="academic-expectations" class="text-2xl font-semibold mb-2 text-spartan-red mt-8">Academic Expectations</h3>
+                    <p class="mb-2">We at Eaton School want to give students every opportunity to demonstrate that they understand the concepts of what is being taught and can achieve the outcomes as laid out in the curricula.</p>
+                    <ul class="list-disc list-inside mb-4 pl-4 space-y-1">
+                        <li>Individual teacher's expectations regarding assignments, projects, exams, late assignments, missed exams, and rewrites will be laid out in their course outline.</li>
+                        <li>Students' final standing in courses will be determined by classroom work, assignments, projects and/or exams.</li>
+                        <li>It will be necessary for students to do homework to ensure completion of all work and proper preparation for exams. It is the student's responsibility to complete all classroom work, assignments, projects and exams to the best of their ability, and to find out what work was missed during their absence and to ensure it is done.</li>
+                    </ul>
+
+                    <h3 id="graduation" class="text-2xl font-semibold mb-2 text-spartan-red mt-8">Requirements for High School Graduation</h3>
+                    <p class="mb-4 text-sm font-semibold">In order to meet the Saskatchewan Ministry requirements, students must have completed a MINIMUM of 24 credits total, attained in their Grade 10, 11 and 12 years. Of the 24 credits, students must have 5 30 level credits. The following is in effect for current Grade 11 & 12 students.</p>
+                    
+                    <div class="overflow-x-auto mb-8 print-break-inside-avoid">
+                        <table class="min-w-full text-sm border border-gray-300">
+                            <thead class="bg-gray-100 text-gray-900 border-b">
+                                <tr>
+                                    <th class="px-4 py-2 border-r border-gray-300 w-1/3 text-center">Grade 10<br><span class="font-normal">(minimum 8 cumulative credits)</span></th>
+                                    <th class="px-4 py-2 border-r border-gray-300 w-1/3 text-center">Grade 11<br><span class="font-normal">(minimum 16 cumulative credits)</span></th>
+                                    <th class="px-4 py-2 w-1/3 text-center">Grade 12<br><span class="font-normal">(minimum 24 cumulative credits, 5 at level 30)</span></th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-4 py-2 border-r border-gray-300 align-top">
+                                        <strong>Compulsory Courses:</strong>
+                                        <ul class="list-disc list-inside mt-2 space-y-1">
+                                            <li>English Language Arts A 10 and English Language Arts B 10</li>
+                                            <li>Social Studies 10, History 10 or Native Studies 10</li>
+                                            <li>One Science at level 10</li>
+                                            <li>One mathematics at level 10</li>
+                                            <li>Three electives at level 10, 20 or 30</li>
+                                        </ul>
+                                    </td>
+                                    <td class="px-4 py-2 border-r border-gray-300 align-top">
+                                        <strong>Compulsory Courses:</strong>
+                                        <ul class="list-disc list-inside mt-2 space-y-1">
+                                            <li>English Language Arts 20</li>
+                                            <li>One mathematics at level 20</li>
+                                            <li>One science at level 20 or 30</li>
+                                            <li>One social science at level 20 or 30</li>
+                                        </ul>
+                                    </td>
+                                    <td class="px-4 py-2 align-top">
+                                        <strong>Compulsory Courses:</strong>
+                                        <ul class="list-disc list-inside mt-2 space-y-1">
+                                            <li>English Language Arts A 30 and English Language Arts B 30</li>
+                                            <li>Social Studies 30: Canadian Studies, History 30: Canadian Studies or Native Studies 30: Canadian Studies</li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="px-4 py-2 bg-gray-50 italic text-center text-xs">
+                                        Plus: Six additional elective credits at level 20 or 30. Two credits in arts education or practical and applied arts at level 10, 20 or 30. One of: Wellness 10, Physical Education 20 or Physical Education 30.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="print-break-before mt-8"></div>
+                    <p class="font-bold mb-4 text-spartan-red">Beginning in 2024-2025, students currently in Grade 10 and students in subsequent grade 10 classes, a renewed policy for High School Credit Requirements has been implemented.</p>
+                    <div class="overflow-x-auto mb-8 print-break-inside-avoid">
+                        <table class="min-w-full text-sm border border-gray-300">
+                            <thead class="bg-gray-100 text-gray-900 border-b">
+                                <tr>
+                                    <th class="px-4 py-2 border-r border-gray-300 w-1/3 text-center">Level 10 (Grade 10)</th>
+                                    <th class="px-4 py-2 border-r border-gray-300 w-1/3 text-center">Level 20 (Grade 11)</th>
+                                    <th class="px-4 py-2 w-1/3 text-center">Level 30 (Grade 12)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr>
+                                    <td colspan="3" class="px-4 py-2 bg-gray-200 font-bold text-center">Required Courses of Study</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-2 border-r border-gray-300 align-top">
+                                        <ul class="list-disc list-inside space-y-1">
+                                            <li>One English language arts at level 10</li>
+                                            <li>One social science at level 10</li>
+                                            <li>One mathematics at level 10</li>
+                                            <li>One science at level 10</li>
+                                            <li>One Financial Literacy at level 10</li>
+                                        </ul>
+                                    </td>
+                                    <td class="px-4 py-2 border-r border-gray-300 align-top">
+                                        <ul class="list-disc list-inside space-y-1">
+                                            <li>One English language arts at level 20</li>
+                                            <li>One mathematics at level 20</li>
+                                        </ul>
+                                    </td>
+                                    <td class="px-4 py-2 align-top">
+                                        <ul class="list-disc list-inside space-y-1">
+                                            <li>One English language arts at level 30</li>
+                                            <li>One social science at level 30</li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="px-4 py-2 bg-gray-200 font-bold text-center">Specified Areas of Study</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="px-4 py-2 align-top italic text-center">In addition to the above required courses of study, credits are required in the following specified areas of study:</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-2 border-r border-gray-300 align-top font-bold text-center bg-gray-50">Science<br><span class="font-normal text-xs">(One science at level 20 or 30*)</span></td>
+                                    <td colspan="2" class="px-4 py-2 align-top text-xs">
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <div>Environmental Science 20</div>
+                                            <div>Physical Science 20</div>
+                                            <div>Earth Science 30</div>
+                                            <div>Biology 30</div>
+                                            <div>Health Science 20</div>
+                                            <div>Chemistry 30</div>
+                                            <div>Physics 30</div>
+                                            <div>Computer Science 20</div>
+                                            <div>Computer Science 30</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-2 border-r border-gray-300 align-top font-bold text-center bg-gray-50">Health/Physical Education<br><span class="font-normal text-xs">(One credit required at 10, 20, or 30 level)</span></td>
+                                    <td colspan="2" class="px-4 py-2 align-top text-xs">
+                                        <ul class="list-disc list-inside space-y-1">
+                                            <li>Wellness 10</li>
+                                            <li>Physical Education 20</li>
+                                            <li>Physical Education 30</li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="mt-2 text-sm italic">To meet the credit requirements for graduation of the SK Regular (English) 24 credit program, students are required to take eleven elective courses at the secondary level. These courses include at least seven courses at Grade 11 or 12.</p>
+                    </div>
+
+                    <h3 id="course-selection" class="text-2xl font-semibold mb-2 text-spartan-red mt-8">Course Selection & Registration (Gr 10-12)</h3>
+                    <p class="mb-2">Students will register for the next year's classes in the spring using an online registration form. Each spring, the Principal communicates with and supports Grade 9 students and their parents/guardians to ensure that they understand the requirements for Graduation.</p>
+                    <p class="mb-2">The Principal will meet with all grade 9-11 students in the spring regarding class selections and course registration for the coming fall, and again in the fall at the beginning of the new school year. Courses selected will be tracked and documentation will be shared with students and parents.</p>
+                    <p class="mb-2">Throughout the year, the Principal meets and communicates regularly with Grade 10-12 students and their parents/guardians in person and/or via email to ensure that all students are on track to graduate or to develop a personalized graduation plan.</p>
+                    <p class="mb-4">Once a student has started a class, all attempts must be made to complete that class. If the student does not meet the requirements for a 10, 20 or 30 Level course, they will receive a failing grade and will not receive a credit on their transcripts.</p>
+
+                    <div class="print-break-before mt-8"></div>
+                    <h3 id="saskdlc" class="text-2xl font-semibold mb-2 text-spartan-red mt-8">SaskDLC Courses</h3>
+                    <p class="mb-2 text-sm">Students in Grades 10-12 can choose from more than 120 Ministry of Saskatchewan-approved online courses through the provincial distance learning center - SDLC. This includes access to all educational resources, reading materials and instructions 24 hours a day. Also, it includes the support of approachable, knowledgeable online teachers who are available by email, phone or video conference weekdays between school hours. Tap into the SaskDLC HelpDesk, which provides technical support around accessing digital resources, utilizing the various programs and tools within our courses, digitally submitting assignments, and e-communication.</p>
+                    <p class="mb-2 text-sm">Regular communication between student, DLC teacher, Eaton Principal and the SDLC Online Facilitator (OLF) and parent(s) will ensure that students stay on track and complete the course within the intended timeline. This includes support, guidance and encouragement, as well as pacing updates, progress reports and check-ins as needed.</p>
+                    <p class="mb-4 text-sm">Students who register in an SDLC course will have that course scheduled in their timetable and that period will not be a spare. Gr 11 and 12 DLC students must report to the SDLC Online Facilitator at the beginning of the period for attendance purposes and to ensure that students are following the DLC suggested timeline for completion.</p>
+
+                    <h4 class="font-bold text-lg mb-1">Subject Withdrawal</h4>
+                    <ul class="list-disc list-inside mb-4 pl-4 text-sm space-y-1">
+                        <li>Student must withdraw from a course before the first reporting period.</li>
+                        <li>In order for a student to withdraw from a class, the student must meet with the Principal in order to determine if they will still meet Provincial Graduation Requirement.</li>
+                        <li>A Subject Withdrawal form must be completed before the first reporting period for that course. The form must state the reason for withdrawal and have the signatures of the parent, teacher and principal.</li>
+                    </ul>
+
+                    <h3 id="assignments" class="text-2xl font-semibold mb-2 text-spartan-red mt-8">Assignment/Project Expectations</h3>
+                    <p class="mb-2 text-sm">Students are required to meet deadlines set for assignments. Any student who does not complete and hand in assignments on the due date will receive an Incomplete (INC) in Edsby. If, due to unforeseen circumstances, a student is unable to hand in an assignment on the due date, they MUST meet with the teacher to ask for an extension. The teacher may grant an extension of up to 1 week.</p>
+                    <ul class="list-disc list-inside mb-4 pl-4 text-sm space-y-1 font-semibold">
+                        <li>Late assignments submitted within the extension time period will be graded and the mark adjusted in Edsby.</li>
+                        <li>Any assignments not submitted within the one week maximum extension time will not be accepted or graded. The INC will be changed to a 0 in Grades 10-12 or IE, Insufficient Evidence, in Grades 7-9.</li>
+                    </ul>
+                    <p class="mb-4 text-sm">Please be aware that there will not be an opportunity for the student to make-up the marks at the end of the reporting period if they are in jeopardy of successfully completing the course. The academic expectations for students are outlined in Section 6.1 Academic Expectations and the consequences of not completing all work assigned in a class are quite clear as noted above and in Section 6.2 Assignments.</p>
+
+                    <h4 class="font-bold text-lg mb-1">Eaton & Provincial Exams (Gr 7-12)</h4>
+                    <p class="mb-4 text-sm">In addition to more frequent, small exams and projects given during the year, there will be major comprehensive exams and/or provincial examinations written in late January and June for Grades 7-12 students. These results comprise a significant portion of the final standing. Students in Grades 11 and 12 will be writing a Provincial exam unless the teacher is accredited in the subject area.</p>
+
+                    <h4 class="font-bold text-lg mb-1">Plagiarism & Artificial Intelligence</h4>
+                    <p class="mb-2 text-sm">Plagiarism is the practice of taking someone else's work or ideas and passing them off as one's own by copying and pasting into an assignment. This is not acceptable. An assignment/project that has been plagiarized in part or in whole will be returned to the student who will then have the opportunity to redo the assignment/project in their own words by the date set out by the teacher. If the assignment is not redone, the grade assigned will be 0.</p>
+                    <p class="mb-4 text-sm">Using AI or any other similar means to write your assignment is considered cheating. We understand the temptation to take shortcuts, but it is important to remember that it goes against academic integrity and will have consequences. If AI is detected in your work, the assignment/project will be returned to the student who will then have the opportunity to redo the assignment/project in their own words by the date set out by the teacher. If the assignment is not redone, the grade assigned will be 0.</p>
+
+                    <h4 class="font-bold text-lg mb-1">Graduation Ceremony Requirements</h4>
+                    <p class="mb-2 text-sm">Traditionally, the Eaton School Graduation ceremony is held the second Saturday in June. Graduation at Eaton School is recognized as an important point in a person's journey through life. It is an event that should be celebrated and students should be recognized for their academic accomplishment. As such, Eaton School has outlined criteria for participation in the Ceremonies.</p>
+                    <p class="mb-2 text-sm font-semibold">In order to participate in the Eaton School Graduation Ceremonies:</p>
+                    <ol class="list-decimal list-inside mb-4 pl-4 text-sm space-y-1">
+                        <li>The student must have a reasonable expectation of graduation (expected to complete required courses)</li>
+                        <li>The student must be able to attain the minimum number of credits (24) required by the Saskatchewan Ministry of Education</li>
+                        <li>The student must be able to attain the required subjects as outlined by the Saskatchewan Ministry of Education</li>
+                        <li>The student must be on track to complete course(s) with a passing mark on the Quarter 3 report card and with no outstanding assignments by May 1st.</li>
+                    </ol>
+
+                    <div class="print-break-before mt-8"></div>
+                    <h3 id="band" class="text-2xl font-semibold mb-2 text-spartan-red mt-8">Band Program</h3>
+                    <p class="mb-4 text-sm">The Band Program at Eaton School includes the Grades 5 & 6 Band; a Junior Band (Grades 7 and 8 students); and a Senior Band made up of students from Grades 9, 10, 11 and 12. Band is compulsory from Grade 5 to 9.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div class="bg-gray-50 p-4 rounded border border-gray-200">
+                            <h4 class="font-bold border-b pb-1 mb-2">Band Instruments</h4>
+                            <p>Instruments are provided for band students in Grades 5-9. Band students in Grades 10-12 are expected to purchase or rent their own instrument. A rental fee will be charged for those students in Grades 10-12 who play specialty instruments, percussion, or who borrow instruments from the school. Band students are expected to take proper care of their instruments... In order to adhere to Fire Code regulations, instruments are not to be left in the hallways.</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded border border-gray-200">
+                            <h4 class="font-bold border-b pb-1 mb-2">Performances & Dress</h4>
+                            <p class="mb-2">Typically, the Bands perform for the Remembrance Day Service, Christmas Concert, and the Strawberry Social. Student attendance at these virtual/live performances is mandatory as it comprises a portion of the students' band marks.</p>
+                            <p>For performances, all Band students are expected to dress in black shoes, black socks, black pants, and a long sleeve white shirt (must have collar and buttons) supplied by the parents/guardians. The Eaton Band Association provides a tie... as well as supplying a red performance jacket for the Junior and Senior Band members.</p>
+                        </div>
+                    </div>
+
+                    <h3 id="driver-ed" class="text-2xl font-semibold mb-2 text-spartan-red mt-8">Driver Education</h3>
+                    <p class="mb-2 text-sm">Sun West School Division provides driver education in accordance with the Education Act, provincial curriculum and the Division agreement with SGI. The Driver's ed course and practice drives will be offered by Mr. Ditson at Eaton, typically in late fall. The requirements set out by SGI are as follows:</p>
+                    <ul class="list-disc list-inside mb-4 pl-4 text-sm space-y-1 bg-gray-50 p-4 border border-gray-200 rounded">
+                        <li><strong>14 years 6 months</strong> - minimum age to enroll in driver's ed class</li>
+                        <li><strong>14 years 9 months</strong> - minimum age to write the learner's test. Students who are younger have to wait til they reach that age in order to write.</li>
+                        <li><strong>15 years 1- minimum age</strong> to be approved by SGI as a learner driver/start driving</li>
+                        <li><strong>9 months</strong> - student must possess learner's license for at least 9 months and be 16 years of age before they can take their driver's test</li>
+                    </ul>
+                    <p class="text-sm italic">Student attendance is expected in order for them to complete the required classroom hours. Once the classroom portion of the course is complete, students will write their learner's license exam (online with SGI)... Once students have obtained their learner's license, Mr. Ditson will schedule drives for students during school hours to complete the driving portion of the course.</p>
+                </section>
+
+                <hr class="my-12 border-gray-300">
+
+                <!-- Assessment -->
+                <section id="assessment" class="mb-12">
+                    <h2 class="text-3xl font-bold text-spartan-black border-b-2 border-spartan-red pb-2 mb-6">Assessment</h2>
+                    
+                    <h3 id="edsby" class="text-2xl font-semibold mb-2 text-spartan-red mt-4">Edsby</h3>
+                    <p class="mb-4 text-sm">EDSBY is a user-friendly online platform used by Sun West School Division to provide students, parent, caregivers and teachers with access to their, their children, or their students academic progress. It also provides parents and caregivers with an effective way to communicate with their children's teachers. Edsby works on all browsers, IOS, and Android devices. The server address when using Edsby is: swsd.</p>
+                    <p class="mb-2 font-bold">Within Edsby, students and parents can access the following:</p>
+                    <ul class="list-disc list-inside mb-6 pl-4 text-sm space-y-2">
+                        <li><strong>Academics</strong> - view grades, assignments, teacher comments.</li>
+                        <li><strong>Attendance</strong> - record if a student is going to be absent.</li>
+                        <li><strong>Daily Announcements</strong> - Sway to keep up on what's happening.</li>
+                        <li><strong>Calendar</strong> - view upcoming assignments, tests, etc.</li>
+                        <li><strong>Groups:</strong> From the Office, Eaton SLC, Eaton SCC, Eaton Buses, Eaton Band Program, Grade Groups, Extra-Curr Groups.</li>
+                    </ul>
+
+                    <div class="print-break-before mt-8"></div>
+                    <h3 id="rubric" class="text-2xl font-semibold mb-4 text-spartan-red mt-4">4 Point Rubric</h3>
+                    <p class="mb-2 text-sm">To increase consistency across the province, divisions have agreed upon a common 4-point rubric for assessment in Grades 1-9.</p>
+                    
+                    <div class="overflow-x-auto mb-6 print-break-inside-avoid">
+                        <table class="min-w-full text-sm border border-gray-300">
+                            <thead class="bg-gray-100 text-gray-900 border-b">
+                                <tr>
+                                    <th class="px-4 py-2 border-r">Numeric</th>
+                                    <th class="px-4 py-2 border-r">Term</th>
+                                    <th class="px-4 py-2">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr><td class="px-4 py-2 border-r font-bold text-center">4</td><td class="px-4 py-2 border-r font-bold text-green-700">Exemplary</td><td class="px-4 py-2">Evidence indicates in-depth understanding, demonstration or application of the outcome</td></tr>
+                                <tr><td class="px-4 py-2 border-r font-bold text-center">3</td><td class="px-4 py-2 border-r font-bold text-blue-700">Meeting</td><td class="px-4 py-2">Evidence indicates understanding, demonstration or application of the outcome</td></tr>
+                                <tr><td class="px-4 py-2 border-r font-bold text-center">2</td><td class="px-4 py-2 border-r font-bold text-yellow-600">Approaching</td><td class="px-4 py-2">Evidence indicates progression towards understanding, demonstration or application of the outcome</td></tr>
+                                <tr><td class="px-4 py-2 border-r font-bold text-center">1</td><td class="px-4 py-2 border-r font-bold text-red-600">Beginning</td><td class="px-4 py-2">Evidence indicates initial understanding, demonstration or application of the outcome</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="overflow-x-auto mb-8 print-break-inside-avoid">
+                        <table class="min-w-full text-sm border border-gray-300">
+                            <thead class="bg-gray-100 text-gray-900 border-b">
+                                <tr><th class="px-4 py-2 border-r">Abb.</th><th class="px-4 py-2 border-r">Term</th><th class="px-4 py-2">Descriptor/Definition</th></tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr><td class="px-4 py-2 border-r font-bold">IE</td><td class="px-4 py-2 border-r">Insufficient Evidence</td><td class="px-4 py-2">The student has not yet demonstrated enough evidence for reporting purpose.</td></tr>
+                                <tr><td class="px-4 py-2 border-r font-bold">NA</td><td class="px-4 py-2 border-r">Not Applicable</td><td class="px-4 py-2">This topic, unit or outcome was not taught or assessed this term.</td></tr>
+                                <tr><td class="px-4 py-2 border-r font-bold">IG</td><td class="px-4 py-2 border-r">Individualized Goals</td><td class="px-4 py-2">The student demonstrates understanding of outcomes that are adjusted in number and complexity as discussed with parents/guardian prior to this report.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 id="fasa" class="text-2xl font-semibold mb-4 text-spartan-red mt-8">FASAs - Factors Affecting Student Achievement</h3>
+                    <p class="mb-4 text-sm font-semibold">Updated September 2024</p>
+                    <p class="mb-2 text-sm">During the 2024-2025 school year, the Factors Affecting Student Achievement (or FASA) categories are being updated to align with the Sun West 21st Century Skills. Kindergarten to Grade 9 students receive an overall FASA mark on the report card. Students in Grades 10-12 receive a FASA mark for each course/credit earned.</p>
+                    
+                    <p class="mb-2 text-sm">Student growth in these skills will be reported in the FASA section of the report cards and will be based on the following updated FASA Themes:</p>
+                    <ul class="list-disc list-inside mb-4 pl-4 font-bold text-sm bg-gray-50 p-4 border rounded shadow-sm inline-block">
+                        <li>Communication and Collaboration</li>
+                        <li>Critical Thinking and Problem-Solving</li>
+                        <li>Creativity and Innovation</li>
+                        <li>Habits for Success</li>
+                    </ul>
+                    <p class="text-sm italic mb-6">FASAs will be assessed using the CUSR rating scale: <strong class="text-spartan-red">C</strong>onsistently, <strong class="text-spartan-red">U</strong>sually, <strong class="text-spartan-red">S</strong>ometimes, <strong class="text-spartan-red">R</strong>arely.</p>
+
+                    <h3 id="report-cards" class="text-2xl font-semibold mb-4 text-spartan-red mt-10 print-break-before">Report Cards & Tri-Conferences</h3>
+                    <p class="mb-4 text-sm">Grade 1-9 will have 3 report cards, while the High School level will have 4. Kindergarten will have 2 report cards.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 text-sm print-break-inside-avoid">
+                        <table class="border border-gray-300">
+                            <thead class="bg-gray-100 border-b"><tr><th colspan="2" class="p-2 text-center">Kindergarten</th></tr></thead>
+                            <tbody>
+                                <tr class="border-b"><td class="p-2 border-r font-bold">T2</td><td class="p-2">Friday, March 14, 2025</td></tr>
+                                <tr><td class="p-2 border-r font-bold">T3</td><td class="p-2">Monday, June 30, 2025</td></tr>
+                            </tbody>
+                        </table>
+                        <table class="border border-gray-300">
+                            <thead class="bg-gray-100 border-b"><tr><th colspan="2" class="p-2 text-center">Grade 1-9</th></tr></thead>
+                            <tbody>
+                                <tr class="border-b"><td class="p-2 border-r font-bold">T1</td><td class="p-2">Thursday, November 7, 2024</td></tr>
+                                <tr class="border-b"><td class="p-2 border-r font-bold">T2</td><td class="p-2">Friday, March 14, 2025</td></tr>
+                                <tr><td class="p-2 border-r font-bold">T3</td><td class="p-2">Monday, June 30, 2025</td></tr>
+                            </tbody>
+                        </table>
+                        <table class="border border-gray-300">
+                            <thead class="bg-gray-100 border-b"><tr><th colspan="2" class="p-2 text-center">Grade 10-12</th></tr></thead>
+                            <tbody>
+                                <tr class="border-b"><td class="p-2 border-r font-bold">Q1</td><td class="p-2">Thursday, November 7, 2024</td></tr>
+                                <tr class="border-b"><td class="p-2 border-r font-bold">Q2</td><td class="p-2">Monday, February 3, 2025</td></tr>
+                                <tr class="border-b"><td class="p-2 border-r font-bold">Q3</td><td class="p-2">Friday, April 11, 2025</td></tr>
+                                <tr><td class="p-2 border-r font-bold">Q4</td><td class="p-2">Monday, June 30, 2025</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h4 class="font-bold text-lg mb-2">Tri-Conferences (Student-Parent-Teacher)</h4>
+                    <p class="mb-4 text-sm">Tri-Conferences are an opportunity for teachers and parents to discuss a student's learning strengths, challenges, and progress. In-person conferences are strongly encouraged. A "BOOKINGS" email will be sent prior to conferences.</p>
+                    <div class="overflow-x-auto mb-6 print-break-inside-avoid">
+                        <table class="min-w-full text-sm border border-gray-300">
+                            <thead class="bg-gray-100 text-gray-900 border-b">
+                                <tr><th class="px-4 py-2 border-r">Conference</th><th class="px-4 py-2 border-r">Grades</th><th class="px-4 py-2 border-r">Dates</th><th class="px-4 py-2">Times</th></tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr><td class="px-4 py-2 border-r font-bold">Fall</td><td class="px-4 py-2 border-r">Grades 1-12</td><td class="px-4 py-2 border-r">Wed, Oct 23, 2024<br>Thu, Oct 24, 2024</td><td class="px-4 py-2">4:00-7:30pm<br>4:00-7:30pm</td></tr>
+                                <tr><td class="px-4 py-2 border-r font-bold">Fall</td><td class="px-4 py-2 border-r">Kindergarten</td><td class="px-4 py-2 border-r">Wed, Nov 27, 2024</td><td class="px-4 py-2">TBD</td></tr>
+                                <tr><td class="px-4 py-2 border-r font-bold">Spring</td><td class="px-4 py-2 border-r">K-12</td><td class="px-4 py-2 border-r">Tue, Mar 18, 2025<br>Wed, Mar 19, 2025</td><td class="px-4 py-2">4:00-7:30pm<br>4:00-7:30pm</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <hr class="my-12 border-gray-300">
+
+                <!-- Student Support -->
+                <section id="student-support" class="mb-12">
+                    <h2 class="text-3xl font-bold text-spartan-black border-b-2 border-spartan-red pb-2 mb-6">Student Support</h2>
+                    <p class="mb-6 italic">A Student Support Team consists of classroom teachers, Student Support Teacher (SST), the administrator, parents, educational assistants, and professionals.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                        <div class="bg-gray-50 border p-4 rounded print-break-inside-avoid">
+                            <h3 class="text-xl font-bold text-spartan-red mb-2">Personalized Goals (PGs)</h3>
+                            <p class="mb-2">A Personalized Goal guides students from what they know to what they need to know.</p>
+                            <ul class="list-disc list-inside pl-2 space-y-1">
+                                <li>PGs are created for students in Grade 1-9 who have gaps in Reading, Writing and Math Numeracy (levels 1 and 2 on report cards).</li>
+                                <li>PGs are also created for Kindergarten students who score yellow or red in any component or overall on the E.Y.E.</li>
+                                <li>Gaps are identified by the teacher by using data such as benchmark assessments, classroom observations, etc.</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-gray-50 border p-4 rounded print-break-inside-avoid">
+                            <h3 class="text-xl font-bold text-spartan-red mb-2">Inclusion & Intervention Plan (IIP)</h3>
+                            <ul class="list-disc list-inside pl-2 space-y-1">
+                                <li>IIPs are created for students who have intensive needs that are beyond curricular (academic) outcomes. Created collaboratively.</li>
+                                <li>Goals and strategies are used to plan, monitor, and measure success.</li>
+                                <li>Goals cover Task Completion, Personal/Social Well-being, Communication, Health/Medical, Safety, Sensory, Motor Skills, Transitions.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 border border-gray-200 p-6 rounded shadow-sm print-break-inside-avoid text-sm">
+                        <h3 class="text-xl font-bold text-spartan-red mb-4">Student Support Plan & Adapted Dimension</h3>
+                        <p class="mb-4">A Student Support Plan is created for students in all grades who require adaptations and/or accommodations to reach grade level outcomes... Adapted Dimension variables include: learning environment, instruction, assessment, and resources. Note: curricular outcomes are not changed or altered.</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-bold border-b pb-1 mb-2">Content/Materials/Instruction</h4>
+                                <ul class="list-disc list-inside space-y-1 text-gray-700">
+                                    <li>Use graphic organizers</li>
+                                    <li>Provide visual schedules</li>
+                                    <li>Use highlighting</li>
+                                    <li>Preferential seating</li>
+                                    <li>Extended time for assignments/tests</li>
+                                    <li>Allow use of calculator, math tables, formula sheets</li>
+                                    <li>Provide sensory tools</li>
+                                    <li>Chunk long term assignments</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-bold border-b pb-1 mb-2">Test Prep/Taking/Assessment</h4>
+                                <ul class="list-disc list-inside space-y-1 text-gray-700">
+                                    <li>Provide visuals/diagrams to help remember concepts</li>
+                                    <li>Provide outline/student guides for materials to be learned</li>
+                                    <li>Provide test questions in advance</li>
+                                    <li>Alternate ways of demonstrating knowledge</li>
+                                    <li>Provide additional time/alternate setting for exams</li>
+                                    <li>Adjust test design (fewer questions, etc)</li>
+                                    <li>Provide reader/scribe for test-taking situations</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <hr class="my-12 border-gray-300">
+
+                <!-- Operations & Policies -->
+                <section id="operations" class="mb-12 print-break-before">
+                    <h2 class="text-3xl font-bold text-spartan-black border-b-2 border-spartan-red pb-2 mb-6">Operations & Policies</h2>
+                    
+                    <h3 class="text-2xl font-semibold mb-4 text-spartan-red">Bell Times</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 text-sm print-break-inside-avoid">
+                        <table class="border border-gray-300">
+                            <thead class="bg-gray-100 border-b"><tr><th colspan="2" class="p-2 text-center text-lg">Elementary</th></tr></thead>
+                            <tbody class="divide-y">
+                                <tr><td class="p-2 border-r">Warning Bell</td><td class="p-2 font-mono font-bold">8:50</td></tr>
+                                <tr><td class="p-2 border-r">Period One</td><td class="p-2 font-mono font-bold">8:55</td></tr>
+                                <tr><td class="p-2 border-r bg-gray-50">Recess</td><td class="p-2 font-mono font-bold bg-gray-50">10:40</td></tr>
+                                <tr><td class="p-2 border-r">Period Three</td><td class="p-2 font-mono font-bold">10:55</td></tr>
+                                <tr><td class="p-2 border-r bg-spartan-red text-white">Lunch</td><td class="p-2 font-mono font-bold bg-spartan-red text-white">11:48</td></tr>
+                                <tr><td class="p-2 border-r">Warning Bell</td><td class="p-2 font-mono font-bold">12:30</td></tr>
+                                <tr><td class="p-2 border-r">Period Four</td><td class="p-2 font-mono font-bold">12:35</td></tr>
+                                <tr><td class="p-2 border-r bg-gray-50">Recess</td><td class="p-2 font-mono font-bold bg-gray-50">2:20</td></tr>
+                                <tr><td class="p-2 border-r">Period Six</td><td class="p-2 font-mono font-bold">2:35</td></tr>
+                                <tr><td class="p-2 border-r font-bold">Dismissal</td><td class="p-2 font-mono font-bold">3:27</td></tr>
+                            </tbody>
+                        </table>
+                        <table class="border border-gray-300">
+                            <thead class="bg-gray-100 border-b"><tr><th colspan="2" class="p-2 text-center text-lg">High School</th></tr></thead>
+                            <tbody class="divide-y">
+                                <tr><td class="p-2 border-r">Warning Bell</td><td class="p-2 font-mono font-bold">8:50</td></tr>
+                                <tr><td class="p-2 border-r">Period One</td><td class="p-2 font-mono font-bold">8:55</td></tr>
+                                <tr><td class="p-2 border-r bg-gray-50">Break</td><td class="p-2 font-mono font-bold bg-gray-50">9:48</td></tr>
+                                <tr><td class="p-2 border-r">Period Two</td><td class="p-2 font-mono font-bold">9:55</td></tr>
+                                <tr><td class="p-2 border-r bg-gray-50">Break</td><td class="p-2 font-mono font-bold bg-gray-50">10:48</td></tr>
+                                <tr><td class="p-2 border-r">Period Three</td><td class="p-2 font-mono font-bold">10:55</td></tr>
+                                <tr><td class="p-2 border-r bg-spartan-red text-white">Lunch</td><td class="p-2 font-mono font-bold bg-spartan-red text-white">11:48</td></tr>
+                                <tr><td class="p-2 border-r">Warning Bell</td><td class="p-2 font-mono font-bold">12:30</td></tr>
+                                <tr><td class="p-2 border-r">Period Four</td><td class="p-2 font-mono font-bold">12:35</td></tr>
+                                <tr><td class="p-2 border-r bg-gray-50">Break</td><td class="p-2 font-mono font-bold bg-gray-50">1:27</td></tr>
+                                <tr><td class="p-2 border-r">Period Five</td><td class="p-2 font-mono font-bold">1:34</td></tr>
+                                <tr><td class="p-2 border-r bg-gray-50">Break</td><td class="p-2 font-mono font-bold bg-gray-50">2:26</td></tr>
+                                <tr><td class="p-2 border-r">Period Six</td><td class="p-2 font-mono font-bold">2:33</td></tr>
+                                <tr><td class="p-2 border-r font-bold">Dismissal</td><td class="p-2 font-mono font-bold">3:25</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 id="policies" class="text-2xl font-semibold mb-4 text-spartan-red mt-8">Student Attendance Policy</h3>
+                    <p class="mb-4 text-sm">Eaton School believes every student has potential. Regular attendance is a strong predictor of student success. Being present fosters engagement, builds relationships and creates a sense of belonging... In Saskatchewan, regular school attendance is compulsory (The Saskatchewan Education Act, 1995).</p>
+                    <div class="bg-gray-50 border p-4 rounded mb-6 text-sm print-break-inside-avoid">
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>Students who are absent from school for any reason are expected to have their parent or guardian notify the school by phone <strong class="text-spartan-red">(306-967-2536)</strong> or email <strong>(eaton@sunwestsd.ca)</strong> before 9:00 am explaining the reason for the absence.</li>
+                            <li>An automated message will be sent each class (Gr 10-12) or morning/afternoon (K-9) for any unexcused absence.</li>
+                            <li><strong>Acceptable Reasons:</strong> Illness (medical note needed for extended), Medical/dental treatment, Court/Legal, Compassionate, Extended Absence (pre-approved), Special Circumstances.</li>
+                            <li><strong>Unacceptable Reasons:</strong> Slept in, missed bus, working, etc.</li>
+                        </ul>
+                    </div>
+
+                    <h3 id="devices" class="text-2xl font-semibold mb-4 text-spartan-red mt-10 print-break-before">Devices and Cell Phone Policy</h3>
+                    <p class="mb-4 text-sm font-bold bg-yellow-100 p-3 rounded border border-yellow-300">Cell phones will not be used during instructional time in Kindergarten to Grade 12, with possible exceptions for grades 9-12 when a clear instructional outcome can be effectively demonstrated.</p>
+                    <ul class="list-disc list-inside mb-6 pl-4 text-sm space-y-2">
+                        <li>Phones, smart watches and ear pods, etc. must be silenced and are not to be operated by students during instructional time.</li>
+                        <li>Electronic devices are to be silenced and left in lockers for K-12 or stored in Grade 7-12 classroom phone "hotels".</li>
+                        <li>Cell phones may not be used at any time where individual privacy must be protected such as washrooms or change rooms. This includes Phys Ed classes.</li>
+                        <li><strong>Consequences (Staged):</strong> First offense = confiscated, parents notified. Second = confiscated, parent call. Third = parents pick up from office. Fourth+ = In-school suspension, disciplinary letter.</li>
+                    </ul>
+
+                    <h3 id="bullying" class="text-2xl font-semibold mb-4 text-spartan-red mt-8">Bullying, Harassment, Physical Confrontations</h3>
+                    <p class="mb-4 text-sm">We want all students to feel that Eaton School is a welcome and caring environment. Bullying is hurtful, done on purpose, and creates an imbalance of power. It is repetitive. There are three kinds of bullying: physical, verbal and indirect.</p>
+                    <p class="mb-6 text-sm font-bold text-red-600">There is Zero Tolerance for physical fighting. Students involved will serve an in-school or out-of-school suspension and parents will be contacted.</p>
+                </section>
+
+                <hr class="my-12 border-gray-300">
+
+                <!-- Procedures, Wellness, Transportation -->
+                <section id="procedures" class="mb-12 print-break-before">
+                    <h2 class="text-3xl font-bold text-spartan-black border-b-2 border-spartan-red pb-2 mb-6">Procedures, Wellness & Transportation</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 text-sm">
+                        <div>
+                            <h3 class="text-xl font-bold text-spartan-red mb-2">Tobacco, Alcohol, Drugs</h3>
+                            <p class="mb-2">The facility and grounds of Eaton are smoke, tobacco and vape free. This includes cigarettes, e-cigarettes, vape products, chewing tobacco, etc. No student, staff member, community member, volunteer or visitor is permitted to smoke or vape.</p>
+                            <p class="font-bold border-l-4 border-spartan-red pl-2 bg-gray-50 py-2">Zero Tolerance: Eaton School has zero tolerance for tobacco, alcohol, marijuana, illegal drugs, and abuse of prescription drugs during school hours and at extra-curricular functions. Automatic suspension applies.</p>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-spartan-red mb-2">Student Dress Expectations</h3>
+                            <p>Students are expected to conform to dress standards acceptable to standards of today's workforce and society. Students will be asked to change if clothing has connotations to drugs, alcohol, sex, racist/sexist/homophobic messages, or are too revealing.</p>
+                        </div>
+                    </div>
+
+                    <h3 id="wellness" class="text-2xl font-semibold mb-4 text-spartan-red mt-8">Wellness</h3>
+                    <p class="mb-4 text-sm">Out of concern for the health of your child(ren) and their classmates, please refrain from sending students to school if they are sick, have pink eye, or have head lice or nits. Child and Youth Counselling services are available on site at Eaton School. The school counsellor adheres to a strict code of confidentiality.</p>
+
+                    <h3 id="transportation" class="text-2xl font-semibold mb-4 text-spartan-red mt-8">Transportation & Storms</h3>
+                    <ul class="list-disc list-inside mb-4 pl-4 text-sm space-y-2">
+                        <li>Buses will not run if the temperature is <strong>-40 Celsius or colder</strong> with the wind chill factor.</li>
+                        <li>Buses will not run if there are hazardous driving conditions.</li>
+                        <li>Eaton School will remain open. If busses do not run, students will be lodged with their designated billets in town.</li>
+                        <li>Parents Driving: Sun West SD requires that parents have $2 million liability insurance on their vehicles in order to transport students and a criminal record/vulnerable sector check.</li>
+                    </ul>
+                </section>
+
+                <hr class="my-12 border-gray-300">
+
+                <!-- Extracurricular -->
+                <section id="athletics" class="mb-12 print-break-before">
+                    <h2 class="text-3xl font-bold text-spartan-black border-b-2 border-spartan-red pb-2 mb-6">Athletics & Extra-Curricular</h2>
+                    <p class="mb-6 text-sm">Students at Eaton School are fortunate to have the opportunities to engage in a number of Extra-Curricular Activities and School Sports throughout the school year. Involvement in these activities is very beneficial for students... There is no cost to families for students to play High School sports.</p>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 text-sm bg-gray-50 p-6 border rounded shadow-sm print-break-inside-avoid">
+                        <div class="col-span-2 font-bold text-lg mb-2 text-spartan-red border-b pb-1">Athletics:</div>
+                        <div class="col-span-2 font-bold text-lg mb-2 text-spartan-red border-b pb-1">Clubs:</div>
+                        
+                        <div class="col-span-1">
+                            <ul class="list-none space-y-1">
+                                <li>Golf (Gr 10-12)</li>
+                                <li>Cross-Country (Gr 7-12)</li>
+                                <li>Sr Football (Gr 9-12)</li>
+                                <li>Midget VB (Gr 4-6)</li>
+                                <li>Jr Boys VB (Gr 7-9)</li>
+                                <li>Jr Girls VB (Gr 7-9)</li>
+                            </ul>
+                        </div>
+                        <div class="col-span-1">
+                            <ul class="list-none space-y-1">
+                                <li>Sr Girls VB (Gr 10-12)</li>
+                                <li>Midget BB (Gr 4-6)</li>
+                                <li>Jr Boys BB (Gr 7-9)</li>
+                                <li>Jr Girls BB (Gr 7-9)</li>
+                                <li>Sr Boys BB (Gr 10-12)</li>
+                                <li>Sr Girls BB (Gr 10-12)</li>
+                                <li>Badminton / Track</li>
+                            </ul>
+                        </div>
+                        <div class="col-span-2">
+                            <ul class="list-none space-y-1">
+                                <li>SRC (Gr 7-12)</li>
+                                <li>Drama (Gr 7-12)</li>
+                                <li>WEvolve (Gr 7-12)</li>
+                                <li>Yearbook (Gr 7-12)</li>
+                                <li>Team Sun West Student Leadership (Gr 8-12)</li>
+                                <li>Power Hour (Gr 1-4)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3 class="text-2xl font-semibold mb-4 text-spartan-red">Expectations of Stakeholders</h3>
+                    <div class="bg-gray-800 text-white p-6 rounded shadow-lg print-break-inside-avoid print:bg-white print:text-black print:border">
+                        <h4 class="font-bold text-xl mb-3 text-yellow-400 print:text-black">Fans and Supporters of our Spartans are reminded:</h4>
+                        <ul class="list-none text-lg space-y-2 font-bold mb-4">
+                            <li><i class="fas fa-check-circle text-spartan-red mr-2"></i> These are Kids</li>
+                            <li><i class="fas fa-check-circle text-spartan-red mr-2"></i> This is a Game</li>
+                            <li><i class="fas fa-check-circle text-spartan-red mr-2"></i> Coaches are Volunteers</li>
+                            <li><i class="fas fa-check-circle text-spartan-red mr-2"></i> Umpires and Refs are Human</li>
+                        </ul>
+                        <p class="italic">These Children are Not Professional Athletes, yet... So please cheer on our Spartans in an appropriate manner.</p>
+                    </div>
+                </section>
+
+            </article>
+            
+            <footer class="mt-16 border-t pt-8 text-center text-sm text-gray-500 no-print">
+                <p>&copy; 2024-2025 Eaton School, Sun West School Division.</p>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Script for Interactivity -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            const sections = document.querySelectorAll('section, h3[id]');
+
+            // Toggle Mobile Menu
+            function toggleMenu() {
+                const isClosed = sidebar.classList.contains('-translate-x-full');
+                if (isClosed) {
+                    sidebar.classList.remove('-translate-x-full');
+                    overlay.classList.remove('hidden');
+                } else {
+                    sidebar.classList.add('-translate-x-full');
+                    overlay.classList.add('hidden');
+                }
+            }
+
+            mobileMenuBtn.addEventListener('click', toggleMenu);
+            overlay.addEventListener('click', toggleMenu);
+
+            // Close sidebar when clicking a link (on mobile)
+            tocLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth < 768) {
+                        toggleMenu();
+                    }
+                });
+            });
+
+            // Intersection Observer to highlight active TOC link based on scroll position
+            const observerOptions = {
+                root: null,
+                rootMargin: '-20% 0px -70% 0px', // Adjust to trigger when section is near top
+                threshold: 0
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        
+                        // Remove active class from all links
+                        tocLinks.forEach(link => {
+                            link.classList.remove('nav-active');
+                        });
+                        
+                        // Add active class to corresponding link
+                        const activeLink = document.querySelector(`.toc-link[href="#${id}"]`);
+                        if (activeLink) {
+                            activeLink.classList.add('nav-active');
+                        }
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
