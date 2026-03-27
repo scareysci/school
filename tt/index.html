@@ -11,13 +11,13 @@
     
     <style id="dynamic-print-style"></style>
 </head>
-<body class="bg-gray-50 font-sans text-gray-800 print:bg-white print:h-auto overflow-hidden">
+<body class="bg-gray-50 font-sans text-gray-800 print:bg-white print:h-auto overflow-hidden print:overflow-visible">
 
     <!-- App Container -->
-    <div id="app" class="flex h-screen print:h-auto">
+    <div id="app" class="flex h-screen print:h-auto print:block">
         <!-- Sidebar and Main Area will be injected here by Javascript -->
         <div id="sidebar-container" class="w-64 bg-white border-r flex flex-col shadow-sm z-40 flex-shrink-0 print:hidden"></div>
-        <div id="main-container" class="flex-1 flex flex-col overflow-hidden bg-gray-100 print:bg-white print:overflow-visible"></div>
+        <div id="main-container" class="flex-1 flex flex-col overflow-hidden bg-gray-100 print:bg-white print:overflow-visible print:block"></div>
     </div>
 
     <script>
@@ -81,6 +81,26 @@
             localStorage.setItem('masterTimetableData', JSON.stringify(teachers));
         }
 
+        // --- UNDO ENGINE ---
+        let undoStack = [];
+        const MAX_HISTORY = 10;
+
+        function saveStateToHistory() {
+            undoStack.push(JSON.stringify(teachers));
+            if (undoStack.length > MAX_HISTORY) {
+                undoStack.shift();
+            }
+        }
+
+        window.undo = function() {
+            if (undoStack.length > 0) {
+                const previousState = undoStack.pop();
+                teachers = JSON.parse(previousState);
+                saveData();
+                renderApp();
+            }
+        };
+
         // --- DRAG AND DROP LOGIC ---
         let dragSource = null;
 
@@ -122,9 +142,12 @@
                 
                 if (sourceTeacher && targetTeacher) {
                     const valToCopy = sourceTeacher.schedule[dragSource.p][dragSource.d];
-                    targetTeacher.schedule[targetP][targetD] = valToCopy;
-                    saveData();
-                    renderApp();
+                    if (targetTeacher.schedule[targetP][targetD] !== valToCopy) {
+                        saveStateToHistory();
+                        targetTeacher.schedule[targetP][targetD] = valToCopy;
+                        saveData();
+                        renderApp();
+                    }
                 }
             }
             return false;
@@ -142,6 +165,7 @@
         };
 
         window.addTeacher = function() {
+            saveStateToHistory();
             const newId = Date.now().toString();
             teachers.push({ id: newId, name: 'NEW TEACHER', schedule: generateEmptyGrid() });
             selectedId = newId;
@@ -153,6 +177,7 @@
         window.deleteTeacher = function() {
             if (teachers.length === 1) return alert("Cannot delete the last teacher.");
             if (confirm(`Are you sure you want to delete ${getTeacher().name}?`)) {
+                saveStateToHistory();
                 teachers = teachers.filter(t => t.id !== selectedId);
                 selectedId = teachers[0].id;
                 saveData();
@@ -182,6 +207,7 @@
                 try {
                     const importedData = JSON.parse(e.target.result);
                     if (Array.isArray(importedData)) {
+                        saveStateToHistory();
                         teachers = importedData;
                         selectedId = importedData[0]?.id || '';
                         saveData();
@@ -213,8 +239,12 @@
             input.className = `w-full h-full text-center outline-none focus:ring-2 focus:ring-indigo-300 ${compactClasses}`;
             
             input.onblur = function() {
-                teacher.schedule[p][d] = this.value.toUpperCase();
-                saveData();
+                const newVal = this.value.toUpperCase();
+                if (teacher.schedule[p][d] !== newVal) {
+                    saveStateToHistory();
+                    teacher.schedule[p][d] = newVal;
+                    saveData();
+                }
                 renderApp();
             };
             input.onkeydown = function(e) {
@@ -241,9 +271,14 @@
                 <div class="p-4 border-b bg-gray-50 flex flex-col gap-3">
                     <div class="flex items-center justify-between">
                         <h2 class="font-bold text-gray-700 tracking-wide uppercase text-sm">Timetable</h2>
-                        <button onclick="addTeacher()" class="p-1.5 bg-indigo-100 text-indigo-700 rounded hover:bg-indigo-200 transition-colors" title="Add Teacher">
-                            <i class="fa-solid fa-user-plus"></i>
-                        </button>
+                        <div class="flex items-center gap-1.5">
+                            <button onclick="undo()" ${undoStack.length === 0 ? 'disabled' : ''} class="p-1.5 rounded transition-colors ${undoStack.length === 0 ? 'bg-gray-100 text-gray-300 cursor-not-allowed' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}" title="Undo (Ctrl+Z)">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </button>
+                            <button onclick="addTeacher()" class="p-1.5 bg-indigo-100 text-indigo-700 rounded hover:bg-indigo-200 transition-colors" title="Add Teacher">
+                                <i class="fa-solid fa-user-plus"></i>
+                            </button>
+                        </div>
                     </div>
                     
                     <div class="flex bg-gray-200 p-1 rounded-md">
@@ -369,7 +404,7 @@
             } else {
                 // MASTER VIEW
                 let html = `
-                    <div class="bg-white border-b px-8 py-5 flex items-center justify-between shadow-sm flex-shrink-0 print:border-none print:px-0 print:py-4">
+                    <div class="bg-white border-b px-8 py-5 flex items-center justify-between shadow-sm flex-shrink-0 print:hidden">
                         <div>
                             <h1 class="text-2xl font-extrabold text-gray-800 uppercase tracking-tight">Master Grid</h1>
                             <p class="text-sm text-gray-500">Showing all ${teachers.length} staff across the 6-day cycle</p>
@@ -379,8 +414,8 @@
                         </button>
                     </div>
 
-                    <div class="flex-1 overflow-auto bg-gray-200 p-4 print:p-0 print:bg-white print:overflow-visible">
-                        <div class="bg-white border border-gray-300 shadow-sm w-max min-w-full inline-block align-top print:border-none print:shadow-none print:w-full">
+                    <div class="flex-1 overflow-auto bg-gray-200 p-4 print:hidden">
+                        <div class="bg-white border border-gray-300 shadow-sm w-max min-w-full inline-block align-top">
                             <table class="border-collapse min-w-full">
                                 <thead>
                                     <tr>
@@ -415,7 +450,60 @@
                 });
 
                 html += `</tbody></table></div></div>`;
-                return html;
+
+                // --- PRINT ONLY LAYOUT (Splits into 2 pages) ---
+                let printHtml = `<div class="hidden print:block w-full p-0 bg-white">`;
+                const chunks = [ [0,1,2], [3,4,5] ]; // Split into Days 1-3, and Days 4-6
+                
+                chunks.forEach((chunk, index) => {
+                    // Force a page break for the second chunk
+                    const pageBreak = index > 0 ? 'page-break-before: always; break-before: page;' : '';
+                    printHtml += `
+                        <div style="${pageBreak}" class="w-full">
+                            <div class="mb-4 flex items-center justify-between">
+                                <div>
+                                    <h1 class="text-2xl font-extrabold text-gray-800 uppercase tracking-tight">Master Grid (Days ${chunk[0]+1}-${chunk[2]+1})</h1>
+                                    <p class="text-sm text-gray-500">Showing all ${teachers.length} staff</p>
+                                </div>
+                            </div>
+                            <table class="border-collapse w-full mb-8">
+                                <thead>
+                                    <tr>
+                                        <th class="h-8 bg-gray-100 border-b border-r border-gray-300 p-1 w-[120px]"></th>
+                                        ${chunk.map(dIndex => `<th colspan="6" class="h-8 bg-gray-200 border-b border-r border-gray-300 text-[11px] uppercase tracking-wider text-center font-bold text-gray-700">Day ${dIndex+1}</th>`).join('')}
+                                    </tr>
+                                    <tr>
+                                        <th class="h-6 bg-gray-50 border-b-2 border-r border-gray-300 p-1 text-[10px] text-left px-2 font-bold text-gray-600 uppercase tracking-wide">Staff Name</th>
+                                        ${chunk.map(dIndex => [0,1,2,3,4,5].map(p => `<th class="h-6 bg-gray-100 border-b-2 border-r border-gray-300 text-[9px] font-semibold text-gray-500 min-w-[56px] w-[56px]">P${p+1}</th>`).join('')).join('')}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                    `;
+
+                    teachers.forEach((t, rowIndex) => {
+                        const isLast = rowIndex === teachers.length - 1;
+                        printHtml += `<tr>
+                            <td class="bg-white border-r border-gray-300 p-1.5 px-2 font-bold text-[10px] text-gray-800 ${!isLast ? 'border-b border-gray-200' : ''}">${escapeHtml(t.name)}</td>`;
+                        
+                        chunk.forEach(d => {
+                            for(let p=0; p<6; p++) {
+                                const val = t.schedule[p][d];
+                                const styles = getCellStyles(val);
+                                printHtml += `<td class="p-0 align-middle ${!isLast ? 'border-b border-gray-200' : ''} ${p === 5 ? 'border-r-2 border-r-gray-300' : 'border-r border-gray-200'}">
+                                    <div class="w-full h-full flex items-center justify-center ${styles} p-1 text-[9px] font-medium min-h-[32px] overflow-hidden whitespace-nowrap">
+                                        <span class="block w-[48px] truncate">${escapeHtml(val) || ''}</span>
+                                    </div>
+                                </td>`;
+                            }
+                        });
+                        printHtml += `</tr>`;
+                    });
+
+                    printHtml += `</tbody></table></div>`;
+                });
+                printHtml += `</div>`;
+
+                return html + printHtml;
             }
         }
 
@@ -447,17 +535,39 @@
             // Re-attach listener to Name Input to avoid losing focus if user is typing
             const nameInput = document.getElementById('teacher-name-input');
             if (nameInput) {
+                let nameSnapshot = "";
+                nameInput.addEventListener('focus', () => {
+                    nameSnapshot = JSON.stringify(teachers);
+                });
                 nameInput.addEventListener('input', (e) => {
                     getTeacher().name = e.target.value.toUpperCase();
-                    saveData();
                     // Only update the sidebar to reflect the new name, keeping focus in the input
                     document.getElementById('sidebar-container').innerHTML = getSidebarHtml();
+                });
+                nameInput.addEventListener('blur', () => {
+                    if (nameSnapshot && nameSnapshot !== JSON.stringify(teachers)) {
+                        undoStack.push(nameSnapshot);
+                        if (undoStack.length > MAX_HISTORY) undoStack.shift();
+                        saveData();
+                        renderApp();
+                    }
                 });
             }
         }
 
         // Initialize the app on page load
-        document.addEventListener('DOMContentLoaded', renderApp);
+        document.addEventListener('DOMContentLoaded', () => {
+            renderApp();
+            
+            // Add Ctrl+Z shortcut
+            document.addEventListener('keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+                    if (e.target.tagName === 'INPUT') return; // Let default text undo work
+                    e.preventDefault();
+                    window.undo();
+                }
+            });
+        });
 
     </script>
 </body>
