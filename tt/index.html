@@ -4,23 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Master Timetable Manager</title>
-    <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style id="dynamic-print-style"></style>
 </head>
 <body class="bg-gray-50 font-sans text-gray-800 print:bg-white print:h-auto overflow-hidden print:overflow-visible">
 
-    <!-- App Container -->
     <div id="app" class="flex h-screen print:h-auto print:block">
-        <!-- Sidebar and Main Area will be injected here by Javascript -->
         <div id="sidebar-container" class="w-64 bg-white border-r flex flex-col shadow-sm z-40 flex-shrink-0 print:hidden"></div>
         <div id="main-container" class="flex-1 flex flex-col overflow-hidden bg-gray-100 print:bg-white print:overflow-visible print:block"></div>
     </div>
 
-    <!-- Settings Modal -->
     <div id="settings-modal" class="fixed inset-0 bg-black bg-opacity-50 z-[100] hidden flex items-center justify-center">
         <div class="bg-white rounded-lg shadow-xl w-[450px] flex flex-col">
             <div class="p-4 border-b flex justify-between items-center bg-gray-50 rounded-t-lg">
@@ -48,7 +43,6 @@
         </div>
     </div>
 
-    <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-4 right-4 bg-gray-800 text-white px-6 py-3 rounded shadow-xl transition-all duration-300 opacity-0 transform translate-y-4 pointer-events-none z-[200] font-medium flex items-center gap-3">
         <i id="toast-icon" class="fa-solid fa-check text-green-400"></i>
         <span id="toast-msg">Success!</span>
@@ -72,7 +66,6 @@
         // --- DATA & STATE ---
         const generateEmptyGrid = () => Array(6).fill(null).map(() => Array(6).fill({text: '', color: 'default'}));
 
-        // Data Upgrade Engine: Converts old string arrays into the new rich {text, color} objects
         function upgradeData(data) {
             data.forEach(t => {
                 for(let p=0; p<6; p++) {
@@ -83,7 +76,6 @@
                             let color = 'default';
                             let v = text.toUpperCase();
                             
-                            // Preserve historical colors on upgrade
                             if (v.includes('PREP')) color = 'gray';
                             else if (v.includes('ADMIN')) color = 'blue';
                             else if (v.includes('PHYS ED') || v.includes('GYM')) color = 'green';
@@ -122,7 +114,6 @@
           { id: '19', name: 'NUNWEILER', schedule: [['', '', '', '', '', ''], ['', '', '', '', '', ''], ['', '', '', '', '', ''], ['', '', '', '', '', ''], ['', '', '', '', '', ''], ['', '', '', '', '', '']] }
         ];
 
-        // Load & Upgrade
         let loadedData = JSON.parse(localStorage.getItem('masterTimetableData')) || initialTeachersRaw;
         let teachers = upgradeData(loadedData);
 
@@ -133,8 +124,8 @@
         };
 
         let selectedId = teachers[0].id;
-        let viewMode = 'single'; // 'single' or 'master'
-        let masterViewType = 'by-period'; // 'by-period' or 'by-teacher'
+        let viewMode = 'single'; 
+        let masterViewType = 'by-period'; 
         let isSyncing = false;
 
         function getTeacher() {
@@ -166,7 +157,6 @@
             }, 3000);
         }
 
-        // --- STYLING LOGIC ---
         function getCellStyles(cellObj) {
             if (!cellObj || !cellObj.text || cellObj.text.toUpperCase() === 'FREE') return 'bg-white text-gray-300 italic';
             if (cellObj.text.includes('......')) return 'bg-gray-50 text-gray-400';
@@ -174,10 +164,9 @@
             if (cellObj.color && colorThemes[cellObj.color]) {
                 return colorThemes[cellObj.color];
             }
-            return 'bg-white text-gray-800'; // fallback
+            return 'bg-white text-gray-800'; 
         }
 
-        // --- ACTIONS & SETTINGS ---
         function saveData() {
             localStorage.setItem('masterTimetableData', JSON.stringify(teachers));
             localStorage.setItem('masterTimetableSettings', JSON.stringify(appSettings));
@@ -210,21 +199,32 @@
             if (isSyncing) return;
 
             isSyncing = true;
-            renderApp(); // Update UI to show loading
+            renderApp(); 
 
             try {
                 const payload = JSON.stringify({ teachers, settings: appSettings });
-                // We send it as plain text to avoid complex pre-flight CORS issues with Apps Script
+                
                 const response = await fetch(appSettings.cloudUrl, {
                     method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8', // Bypass pre-flight CORS
+                    },
                     body: payload
                 });
                 
-                const result = await response.json();
-                if (result.status === 'success') {
-                    showToast('Successfully pushed to Google Sheets!');
-                } else {
-                    showToast('Failed to save to cloud.', true);
+                // Safely read response text first to catch Google HTML Error pages
+                const text = await response.text();
+                
+                try {
+                    const result = JSON.parse(text);
+                    if (result.status === 'success') {
+                        showToast('Successfully pushed to Google Sheets!');
+                    } else {
+                        showToast('Failed to save to cloud: ' + result.message, true);
+                    }
+                } catch (e) {
+                    console.error("Received HTML instead of JSON. The deployment lacks permission:", text);
+                    showToast('Error: Google sent an HTML login page. Check your script permissions.', true);
                 }
             } catch (err) {
                 console.error(err);
@@ -240,20 +240,26 @@
             if (isSyncing) return;
 
             isSyncing = true;
-            renderApp(); // Update UI
+            renderApp(); 
 
             try {
                 const response = await fetch(appSettings.cloudUrl);
-                const result = await response.json();
+                const text = await response.text();
                 
-                if (result && result.teachers) {
-                    saveStateToHistory(); // In case they want to undo the pull!
-                    teachers = upgradeData(result.teachers);
-                    if (result.settings) appSettings = result.settings;
-                    saveData();
-                    showToast('Successfully pulled from Google Sheets!');
-                } else {
-                    showToast('No data found in cloud.', true);
+                try {
+                    const result = JSON.parse(text);
+                    if (result && result.teachers) {
+                        saveStateToHistory(); 
+                        teachers = upgradeData(result.teachers);
+                        if (result.settings) appSettings = result.settings;
+                        saveData();
+                        showToast('Successfully pulled from Google Sheets!');
+                    } else {
+                        showToast('No data found in cloud.', true);
+                    }
+                } catch (e) {
+                    console.error("Received HTML instead of JSON. The deployment lacks permission:", text);
+                    showToast('Error: Google sent an HTML login page. Check your script permissions.', true);
                 }
             } catch (err) {
                 console.error(err);
@@ -289,7 +295,6 @@
         let dragSource = null;
 
         window.handleDragStart = function(e, tId, p, d) {
-            // Check if we are currently editing. If so, don't allow drag
             if (e.currentTarget.querySelector('input')) {
                 e.preventDefault();
                 return;
@@ -411,7 +416,7 @@
                     const importedData = JSON.parse(e.target.result);
                     if (Array.isArray(importedData)) {
                         saveStateToHistory();
-                        teachers = upgradeData(importedData); // upgrades old strings to objects if necessary
+                        teachers = upgradeData(importedData); 
                         selectedId = teachers[0]?.id || '';
                         saveData();
                         renderApp();
@@ -452,12 +457,10 @@
             const popover = document.createElement('div');
             popover.className = `absolute top-0 left-0 z-50 flex flex-col bg-white border-2 border-indigo-500 rounded shadow-2xl ${isCompact ? 'min-w-[150px]' : 'min-w-[100%]'}`;
             
-            // Generate Swatches
             let swatchesHtml = Object.keys(colorThemes).map(c => `
                 <div onclick="applyInlineEdit('${tId}', ${p}, ${d}, '${c}')" class="w-5 h-5 rounded cursor-pointer hover:scale-110 ${colorThemes[c].split(' ')[0]} border border-gray-300" title="${c}"></div>
             `).join('');
             
-            // Clear Color Button
             swatchesHtml += `<div onclick="applyInlineEdit('${tId}', ${p}, ${d}, 'default')" class="w-5 h-5 rounded cursor-pointer hover:scale-110 bg-white border border-gray-300 flex items-center justify-center text-[10px] font-bold text-gray-500" title="Clear Color">X</div>`;
 
             popover.innerHTML = `
@@ -480,7 +483,7 @@
 
         window.applyInlineEdit = function(tId, p, d, colorKey) {
             const input = document.getElementById('inline-edit-input');
-            if (!input) return; // Prevent double firing
+            if (!input) return; 
             
             const newVal = input.value.toUpperCase();
             const teacher = teachers.find(t => t.id === tId);
@@ -492,7 +495,6 @@
             }
             renderApp();
         };
-
 
         // --- RENDERING VIEWS ---
         function getSidebarHtml() {
@@ -534,7 +536,6 @@
 
                 <div class="p-4 border-t bg-gray-50 flex flex-col gap-2">
                     
-                    <!-- Cloud Sync Panel -->
                     <div class="bg-indigo-50 border border-indigo-100 rounded-lg p-3 mb-2 flex flex-col gap-2">
                         ${appSettings.cloudUrl ? `
                             <button onclick="pullFromCloud()" class="w-full flex items-center justify-center gap-2 py-1.5 px-3 bg-white border border-indigo-200 text-indigo-700 rounded text-sm hover:bg-indigo-50 transition-colors" ${isSyncing ? 'disabled' : ''}>
@@ -605,7 +606,6 @@
             if (viewMode === 'single') {
                 const t = getTeacher();
                 
-                // Toolbar
                 let html = `
                     <div class="bg-white border-b px-8 py-5 flex items-center justify-between shadow-sm flex-shrink-0 print:hidden">
                         <div class="flex flex-col">
@@ -629,11 +629,8 @@
                     </div>
                 `;
 
-                // Single Grid
                 html += `
                     <div class="single-grid-container flex-1 p-8 overflow-auto print:p-0 print:overflow-visible">
-                        
-                        <!-- Print-Only Header -->
                         <div class="hidden print:block mb-8 text-center w-full max-w-7xl mx-auto">
                             <h1 class="text-3xl font-extrabold text-gray-800 uppercase tracking-tight">${escapeHtml(t.name)}'S TIMETABLE</h1>
                             <p class="text-base text-gray-500 mt-1 uppercase tracking-wide">${escapeHtml(appSettings.schoolName)} &bull; ${escapeHtml(appSettings.schoolYear)}</p>
@@ -674,7 +671,6 @@
                     </div>
                 `;
 
-                // Bulk Print Container
                 html += `<div class="print-all-container hidden">`;
                 teachers.forEach((teacher, index) => {
                     html += `
@@ -743,7 +739,6 @@
                 `;
 
                 if (masterViewType === 'by-period') {
-                    // --- MASTER GRID (BY PERIOD - STACKED) ---
                     html += `
                         <div class="flex-1 overflow-auto bg-gray-200 p-4 print:p-0 print:bg-white print:overflow-visible">
                     `;
@@ -800,7 +795,6 @@
                     return html;
 
                 } else {
-                    // --- MASTER GRID (BY TEACHER - STACKED) ---
                     html += `
                         <div class="flex-1 overflow-auto bg-gray-200 p-4 print:p-0 print:bg-white print:overflow-visible">
                     `;
@@ -881,7 +875,6 @@
             `;
         }
 
-        // --- CORE RENDER ENGINE ---
         function renderApp() {
             document.getElementById('sidebar-container').innerHTML = getSidebarHtml();
             document.getElementById('main-container').innerHTML = getMainHtml();
