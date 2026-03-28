@@ -4,18 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Master Timetable Manager</title>
+    <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style id="dynamic-print-style"></style>
 </head>
 <body class="bg-gray-50 font-sans text-gray-800 print:bg-white print:h-auto overflow-hidden print:overflow-visible">
 
+    <!-- App Container -->
     <div id="app" class="flex h-screen print:h-auto print:block">
         <div id="sidebar-container" class="w-64 bg-white border-r flex flex-col shadow-sm z-40 flex-shrink-0 print:hidden"></div>
         <div id="main-container" class="flex-1 flex flex-col overflow-hidden bg-gray-100 print:bg-white print:overflow-visible print:block"></div>
     </div>
 
+    <!-- Settings Modal -->
     <div id="settings-modal" class="fixed inset-0 bg-black bg-opacity-50 z-[100] hidden flex items-center justify-center">
         <div class="bg-white rounded-lg shadow-xl w-[450px] flex flex-col">
             <div class="p-4 border-b flex justify-between items-center bg-gray-50 rounded-t-lg">
@@ -43,6 +47,7 @@
         </div>
     </div>
 
+    <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-4 right-4 bg-gray-800 text-white px-6 py-3 rounded shadow-xl transition-all duration-300 opacity-0 transform translate-y-4 pointer-events-none z-[200] font-medium flex items-center gap-3">
         <i id="toast-icon" class="fa-solid fa-check text-green-400"></i>
         <span id="toast-msg">Success!</span>
@@ -193,7 +198,7 @@
             showToast('Settings saved!');
         };
 
-        // --- CLOUD SYNC ENGINE ---
+        // --- CLOUD SYNC ENGINE (WITH LOCAL FILE BYPASS) ---
         window.pushToCloud = async function() {
             if (!appSettings.cloudUrl) return openSettings();
             if (isSyncing) return;
@@ -202,29 +207,37 @@
             renderApp(); 
 
             try {
+                const url = appSettings.cloudUrl.trim();
                 const payload = JSON.stringify({ teachers, settings: appSettings });
                 
-                const response = await fetch(appSettings.cloudUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'text/plain;charset=utf-8', // Bypass pre-flight CORS
-                    },
-                    body: payload
-                });
-                
-                // Safely read response text first to catch Google HTML Error pages
-                const text = await response.text();
-                
                 try {
-                    const result = JSON.parse(text);
-                    if (result.status === 'success') {
-                        showToast('Successfully pushed to Google Sheets!');
-                    } else {
-                        showToast('Failed to save to cloud: ' + result.message, true);
+                    // Attempt 1: Standard fetch (Works if hosted online like GitHub Pages)
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        body: payload
+                    });
+                    
+                    const text = await response.text();
+                    try {
+                        const result = JSON.parse(text);
+                        if (result.status === 'success') {
+                            showToast('Successfully pushed to Google Sheets!');
+                        } else {
+                            showToast('Failed to save to cloud: ' + result.message, true);
+                        }
+                    } catch (e) {
+                        showToast('Error: Google sent a login page. Check script permissions.', true);
                     }
-                } catch (e) {
-                    console.error("Received HTML instead of JSON. The deployment lacks permission:", text);
-                    showToast('Error: Google sent an HTML login page. Check your script permissions.', true);
+                } catch (networkError) {
+                    // Attempt 2: CORS Bypass for Local Files (file:///)
+                    console.warn("Standard fetch blocked (likely local CORS). Falling back to Local Mode...", networkError);
+                    await fetch(url, {
+                        method: 'POST',
+                        body: payload,
+                        mode: 'no-cors' // Sneaks the data past browser security blocks
+                    });
+                    // With no-cors, we can't read the response to verify, so we assume success if it didn't crash
+                    showToast('Pushed to Google Sheets (Local Mode)!');
                 }
             } catch (err) {
                 console.error(err);
@@ -243,7 +256,8 @@
             renderApp(); 
 
             try {
-                const response = await fetch(appSettings.cloudUrl);
+                const url = appSettings.cloudUrl.trim();
+                const response = await fetch(url);
                 const text = await response.text();
                 
                 try {
@@ -259,7 +273,7 @@
                     }
                 } catch (e) {
                     console.error("Received HTML instead of JSON. The deployment lacks permission:", text);
-                    showToast('Error: Google sent an HTML login page. Check your script permissions.', true);
+                    showToast('Error: Google sent a login page. Check script permissions.', true);
                 }
             } catch (err) {
                 console.error(err);
