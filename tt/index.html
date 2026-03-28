@@ -15,6 +15,7 @@
 
     <!-- App Container -->
     <div id="app" class="flex h-screen print:h-auto print:block">
+        <!-- Sidebar and Main Area will be injected here by Javascript -->
         <div id="sidebar-container" class="w-64 bg-white border-r flex flex-col shadow-sm z-40 flex-shrink-0 print:hidden"></div>
         <div id="main-container" class="flex-1 flex flex-col overflow-hidden bg-gray-100 print:bg-white print:overflow-visible print:block"></div>
     </div>
@@ -198,7 +199,7 @@
             showToast('Settings saved!');
         };
 
-        // --- CLOUD SYNC ENGINE (WITH LOCAL FILE BYPASS) ---
+        // --- CLOUD SYNC ENGINE ---
         window.pushToCloud = async function() {
             if (!appSettings.cloudUrl) return openSettings();
             if (isSyncing) return;
@@ -210,11 +211,14 @@
                 const url = appSettings.cloudUrl.trim();
                 const payload = JSON.stringify({ teachers, settings: appSettings });
                 
+                // Packaged as standard Web Form data to prevent browser stripping
+                const formData = new URLSearchParams();
+                formData.append('data', payload);
+                
                 try {
-                    // Attempt 1: Standard fetch (Works if hosted online like GitHub Pages)
                     const response = await fetch(url, {
                         method: 'POST',
-                        body: payload
+                        body: formData
                     });
                     
                     const text = await response.text();
@@ -229,15 +233,13 @@
                         showToast('Error: Google sent a login page. Check script permissions.', true);
                     }
                 } catch (networkError) {
-                    // Attempt 2: CORS Bypass for Local Files (file:///)
-                    console.warn("Standard fetch blocked (likely local CORS). Falling back to Local Mode...", networkError);
+                    console.warn("Standard fetch blocked. Falling back to Local Mode...", networkError);
                     await fetch(url, {
                         method: 'POST',
-                        body: payload,
-                        mode: 'no-cors' // Sneaks the data past browser security blocks
+                        body: formData,
+                        mode: 'no-cors' 
                     });
-                    // With no-cors, we can't read the response to verify, so we assume success if it didn't crash
-                    showToast('Pushed to Google Sheets (Local Mode)!');
+                    showToast('Pushed to Google Sheets (Local Form Mode)!');
                 }
             } catch (err) {
                 console.error(err);
@@ -733,7 +735,6 @@
                 return html;
 
             } else {
-                // MASTER VIEW
                 let html = `
                     <div class="bg-white border-b px-8 py-5 flex items-center justify-between shadow-sm flex-shrink-0 print:hidden">
                         <div>
