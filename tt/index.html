@@ -156,6 +156,8 @@
             schoolYear: '2025-2026'
         };
 
+        let versions = JSON.parse(localStorage.getItem('masterTimetableVersions')) || [];
+
         let selectedId = teachers[0].id;
         let viewMode = 'single'; 
         let masterViewType = 'by-period'; 
@@ -203,6 +205,7 @@
         function saveData() {
             localStorage.setItem('masterTimetableData', JSON.stringify(teachers));
             localStorage.setItem('masterTimetableSettings', JSON.stringify(appSettings));
+            localStorage.setItem('masterTimetableVersions', JSON.stringify(versions));
         }
 
         window.openSettings = function() {
@@ -238,6 +241,7 @@
                 await setDoc(docRef, {
                     teachersStr: JSON.stringify(teachers),
                     settings: appSettings,
+                    versionsStr: JSON.stringify(versions),
                     lastUpdated: new Date().toISOString()
                 });
                 
@@ -270,6 +274,9 @@
                     if (data.settings) {
                         appSettings = data.settings;
                     }
+                    if (data.versionsStr) {
+                        versions = JSON.parse(data.versionsStr);
+                    }
                     saveData();
                     showToast('Successfully pulled from Firebase!');
                 } else {
@@ -282,6 +289,42 @@
 
             isSyncing = false;
             renderApp();
+        };
+
+        // --- VERSIONING ENGINE ---
+        window.saveVersion = async function() {
+            const versionName = prompt("Enter a name for this snapshot (e.g., 'Fall Final'):");
+            if (!versionName) return;
+            
+            const newVersion = {
+                id: Date.now().toString(),
+                name: versionName,
+                timestamp: new Date().toISOString(),
+                teachers: JSON.parse(JSON.stringify(teachers)),
+                settings: JSON.parse(JSON.stringify(appSettings))
+            };
+            
+            versions.push(newVersion);
+            saveData();
+            
+            // Automatically push to cloud to ensure the version is backed up globally
+            await window.pushToCloud();
+            showToast("Snapshot saved to Cloud!");
+        };
+
+        window.restoreVersion = function(versionId) {
+            if (!versionId) return;
+            if (!confirm("This will overwrite your current working grid with the selected version. Continue?")) return;
+            
+            const v = versions.find(v => v.id === versionId);
+            if (v) {
+                saveStateToHistory();
+                teachers = JSON.parse(JSON.stringify(v.teachers));
+                if (v.settings) appSettings = JSON.parse(JSON.stringify(v.settings));
+                saveData();
+                renderApp();
+                showToast(`Restored: ${v.name}`);
+            }
         };
 
         // --- UNDO ENGINE ---
@@ -350,18 +393,18 @@
                     const valToCopy = sourceTeacher.schedule[dragSource.p][dragSource.d];
                     const targetCell = targetTeacher.schedule[targetP][targetD];
                     
-                    const sourceText = typeof valToCopy === 'string' ? valToCopy : valToCopy.text;
-                    const sourceColor = typeof valToCopy === 'string' ? 'default' : valToCopy.color;
+                    // Deep copy to ensure both text and color are securely transferred
+                    const clonedVal = { 
+                        text: valToCopy.text || '', 
+                        color: valToCopy.color || 'default' 
+                    };
                     
                     const targetText = typeof targetCell === 'string' ? targetCell : targetCell.text;
                     const targetColor = typeof targetCell === 'string' ? 'default' : targetCell.color;
                     
-                    if (targetText !== sourceText || targetColor !== sourceColor) {
+                    if (targetText !== clonedVal.text || targetColor !== clonedVal.color) {
                         saveStateToHistory(); 
-                        targetTeacher.schedule[targetP][targetD] = { 
-                            text: sourceText, 
-                            color: sourceColor 
-                        };
+                        targetTeacher.schedule[targetP][targetD] = clonedVal;
                         saveData();
                         renderApp();
                     }
@@ -550,13 +593,39 @@
 
                 <div class="p-4 border-t bg-gray-50 flex flex-col gap-2">
                     
-                    <div class="bg-indigo-50 border border-indigo-100 rounded-lg p-3 mb-2 flex flex-col gap-2">
-                        <button onclick="pullFromCloud()" class="w-full flex items-center justify-center gap-2 py-1.5 px-3 bg-white border border-indigo-200 text-indigo-700 rounded text-sm hover:bg-indigo-50 transition-colors" ${isSyncing ? 'disabled' : ''}>
-                            ${isSyncing ? '<i class="fa-solid fa-circle-notch fa-spin"></i>' : '<i class="fa-solid fa-cloud-arrow-down"></i>'} Pull from Cloud
+                    <!-- Versions Panel -->
+                    <div class="mb-2">
+                        <label class="text-[10px] font-bold text-gray-500 uppercase flex items-center gap-1 mb-1.5 tracking-wider">
+                            <i class="fa-solid fa-code-branch"></i> Version History
+                        </label>
+                        <select
+                            class="w-full mb-2 text-xs border-gray-300 rounded p-1.5 bg-white text-gray-700 border outline-none focus:border-indigo-500 disabled:bg-gray-100 disabled:text-gray-400"
+                            onchange="restoreVersion(this.value); this.value='';"
+                            ${versions.length === 0 ? 'disabled' : ''}
+                        >
+                            <option value="">${versions.length === 0 ? '-- No Saved Versions --' : 'Load Snapshot...'}</option>
+                            ${versions.map(v => `<option value="${v.id}">${escapeHtml(v.name)} (${new Date(v.timestamp).toLocaleDateString()})</option>`).join('')}
+                        </select>
+                        <button onclick="saveVersion()" class="w-full flex items-center justify-center gap-2 py-1.5 px-3 bg-green-600 text-white rounded text-sm hover:bg-green-700 shadow-sm transition-colors">
+                            <i class="fa-solid fa-camera"></i> Save Snapshot
                         </button>
-                        <button onclick="pushToCloud()" class="w-full flex items-center justify-center gap-2 py-1.5 px-3 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700 shadow-sm transition-colors" ${isSyncing ? 'disabled' : ''}>
-                            ${isSyncing ? '<i class="fa-solid fa-circle-notch fa-spin"></i>' : '<i class="fa-solid fa-cloud-arrow-up"></i>'} Push to Cloud
-                        </button>
+                    </div>
+
+                    <hr class="border-gray-200 my-1">
+
+                    <!-- Cloud Sync Panel -->
+                    <div class="flex flex-col gap-2 mb-1">
+                        <label class="text-[10px] font-bold text-gray-500 uppercase flex items-center gap-1 tracking-wider">
+                            <i class="fa-solid fa-cloud"></i> Cloud Sync
+                        </label>
+                        <div class="flex gap-2">
+                            <button onclick="pullFromCloud()" class="flex-1 flex items-center justify-center gap-2 py-1.5 px-3 bg-white border border-indigo-200 text-indigo-700 rounded text-sm hover:bg-indigo-50 transition-colors" ${isSyncing ? 'disabled' : ''}>
+                                ${isSyncing ? '<i class="fa-solid fa-circle-notch fa-spin"></i>' : '<i class="fa-solid fa-download"></i>'} Pull
+                            </button>
+                            <button onclick="pushToCloud()" class="flex-1 flex items-center justify-center gap-2 py-1.5 px-3 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700 shadow-sm transition-colors" ${isSyncing ? 'disabled' : ''}>
+                                ${isSyncing ? '<i class="fa-solid fa-circle-notch fa-spin"></i>' : '<i class="fa-solid fa-upload"></i>'} Push
+                            </button>
+                        </div>
                     </div>
 
                     <button onclick="openSettings()" class="w-full flex items-center justify-center gap-2 py-2 px-4 bg-gray-800 text-white rounded text-sm hover:bg-gray-700 shadow-sm transition-colors mb-1">
