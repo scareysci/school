@@ -573,12 +573,29 @@
             const input = document.getElementById('inline-edit-input');
             if (!input) return; 
             
+            // Prevent race condition: clicking a color swatch causes the input to lose focus (blur),
+            // which would accidentally overwrite the selected color with the original cell color.
+            input.onblur = null; 
+            
             const newVal = input.value.toUpperCase();
             const teacher = teachers.find(t => t.id === tId);
             
-            if (teacher.schedule[p][d].text !== newVal || teacher.schedule[p][d].color !== colorKey) {
+            let finalColor = colorKey;
+            
+            // Auto-color fallback: If the user just hits Enter, auto-color the cell based on the subject name
+            if (finalColor === 'default') {
+                if (newVal.includes('PREP')) finalColor = 'gray';
+                else if (newVal.includes('ADMIN')) finalColor = 'blue';
+                else if (newVal.includes('PHYS ED') || newVal.includes('GYM')) finalColor = 'green';
+                else if (newVal.includes('SCIENCE') || newVal.includes('BIO')) finalColor = 'purple';
+                else if (newVal.includes('MATH')) finalColor = 'red';
+                else if (newVal.includes('STEAM') || newVal.includes('PAA')) finalColor = 'orange';
+                else if (newVal.includes('BAND') || newVal.includes('MUSIC')) finalColor = 'yellow';
+            }
+
+            if (teacher.schedule[p][d].text !== newVal || teacher.schedule[p][d].color !== finalColor) {
                 saveStateToHistory();
-                teacher.schedule[p][d] = { text: newVal, color: colorKey };
+                teacher.schedule[p][d] = { text: newVal, color: finalColor };
                 saveData();
             }
             renderApp();
