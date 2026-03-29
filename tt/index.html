@@ -37,9 +37,10 @@
                     <input id="setting-school-year" type="text" placeholder="e.g., 2025-2026" class="w-full border border-gray-300 rounded p-2.5 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-gray-700 font-medium">
                 </div>
                 <div class="pt-4 border-t border-gray-200">
-                    <label class="block text-xs uppercase tracking-wider text-green-600 font-bold mb-1.5"><i class="fa-solid fa-cloud mr-1"></i> Google Apps Script URL (Database)</label>
-                    <input id="setting-cloud-url" type="text" placeholder="https://script.google.com/macros/s/..." class="w-full border border-gray-300 rounded p-2.5 outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all text-gray-700 font-medium text-sm">
-                    <p class="text-xs text-gray-400 mt-1">Paste your Google Web App URL here to enable cloud syncing.</p>
+                    <label class="block text-xs uppercase tracking-wider text-green-600 font-bold mb-1.5"><i class="fa-solid fa-cloud mr-1"></i> Cloud Database Connected</label>
+                    <p class="text-sm text-gray-600 font-medium bg-green-50 border border-green-200 rounded p-3">
+                        <i class="fa-solid fa-check-circle text-green-500 mr-1"></i> This timetable is securely connected to your Firebase database. Use the Push and Pull buttons in the sidebar to sync your changes.
+                    </p>
                 </div>
             </div>
             <div class="p-4 border-t bg-gray-50 rounded-b-lg flex justify-end">
@@ -54,7 +55,34 @@
         <span id="toast-msg">Success!</span>
     </div>
 
-    <script>
+    <!-- Notice type="module" allows us to import Firebase -->
+    <script type="module">
+        // --- FIREBASE SETUP ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBB5mmcqHWiC4ixnA0EcwYdLBaYPx5VHRA",
+            authDomain: "timetable-1868a.firebaseapp.com",
+            projectId: "timetable-1868a",
+            storageBucket: "timetable-1868a.firebasestorage.app",
+            messagingSenderId: "1065418438378",
+            appId: "1:1065418438378:web:149818be4559271f04c993",
+            measurementId: "G-WDSJT2Q1CN"
+        };
+
+        // Initialize Firebase
+        const firebaseApp = initializeApp(firebaseConfig);
+        const auth = getAuth(firebaseApp);
+        const db = getFirestore(firebaseApp);
+
+        // Sign in anonymously to allow database read/writes securely
+        signInAnonymously(auth).catch((error) => {
+            console.error("Firebase Auth Error:", error);
+            showToast("Warning: Could not connect to authentication server.", true);
+        });
+
         // --- THEME ENGINE ---
         const colorThemes = {
             gray: 'bg-gray-200 text-gray-700',
@@ -124,9 +152,8 @@
         let teachers = upgradeData(loadedData);
 
         let appSettings = JSON.parse(localStorage.getItem('masterTimetableSettings')) || {
-            schoolName: 'Your School Name',
-            schoolYear: '2025-2026',
-            cloudUrl: ''
+            schoolName: 'Rosetown Central High',
+            schoolYear: '2025-2026'
         };
 
         let selectedId = teachers[0].id;
@@ -181,7 +208,6 @@
         window.openSettings = function() {
             document.getElementById('setting-school-name').value = appSettings.schoolName || '';
             document.getElementById('setting-school-year').value = appSettings.schoolYear || '';
-            document.getElementById('setting-cloud-url').value = appSettings.cloudUrl || '';
             document.getElementById('settings-modal').classList.remove('hidden');
         };
 
@@ -192,58 +218,33 @@
         window.saveSettings = function() {
             appSettings.schoolName = document.getElementById('setting-school-name').value;
             appSettings.schoolYear = document.getElementById('setting-school-year').value;
-            appSettings.cloudUrl = document.getElementById('setting-cloud-url').value;
             saveData();
             closeSettings();
             renderApp();
             showToast('Settings saved!');
         };
 
-        // --- CLOUD SYNC ENGINE ---
+        // --- CLOUD SYNC ENGINE (FIREBASE) ---
         window.pushToCloud = async function() {
-            if (!appSettings.cloudUrl) return openSettings();
             if (isSyncing) return;
-
             isSyncing = true;
             renderApp(); 
 
             try {
-                const url = appSettings.cloudUrl.trim();
-                const payload = JSON.stringify({ teachers, settings: appSettings });
+                // We use a shared document so everyone loads the same file
+                const docRef = doc(db, 'timetable', 'main');
                 
-                // Packaged as standard Web Form data to prevent browser stripping
-                const formData = new URLSearchParams();
-                formData.append('data', payload);
+                // We stringify the arrays to avoid Firebase nested array limitations
+                await setDoc(docRef, {
+                    teachersStr: JSON.stringify(teachers),
+                    settings: appSettings,
+                    lastUpdated: new Date().toISOString()
+                });
                 
-                try {
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        body: formData
-                    });
-                    
-                    const text = await response.text();
-                    try {
-                        const result = JSON.parse(text);
-                        if (result.status === 'success') {
-                            showToast('Successfully pushed to Google Sheets!');
-                        } else {
-                            showToast('Failed to save to cloud: ' + result.message, true);
-                        }
-                    } catch (e) {
-                        showToast('Error: Google sent a login page. Check script permissions.', true);
-                    }
-                } catch (networkError) {
-                    console.warn("Standard fetch blocked. Falling back to Local Mode...", networkError);
-                    await fetch(url, {
-                        method: 'POST',
-                        body: formData,
-                        mode: 'no-cors' 
-                    });
-                    showToast('Pushed to Google Sheets (Local Form Mode)!');
-                }
+                showToast('Successfully pushed to Firebase!');
             } catch (err) {
                 console.error(err);
-                showToast('Connection error. Check your URL.', true);
+                showToast('Connection error. Could not save.', true);
             }
 
             isSyncing = false;
@@ -251,35 +252,32 @@
         };
 
         window.pullFromCloud = async function() {
-            if (!appSettings.cloudUrl) return openSettings();
             if (isSyncing) return;
-
             isSyncing = true;
             renderApp(); 
 
             try {
-                const url = appSettings.cloudUrl.trim();
-                const response = await fetch(url);
-                const text = await response.text();
+                const docRef = doc(db, 'timetable', 'main');
+                const docSnap = await getDoc(docRef);
                 
-                try {
-                    const result = JSON.parse(text);
-                    if (result && result.teachers) {
-                        saveStateToHistory(); 
-                        teachers = upgradeData(result.teachers);
-                        if (result.settings) appSettings = result.settings;
-                        saveData();
-                        showToast('Successfully pulled from Google Sheets!');
-                    } else {
-                        showToast('No data found in cloud.', true);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    saveStateToHistory(); 
+                    
+                    if (data.teachersStr) {
+                        teachers = upgradeData(JSON.parse(data.teachersStr));
                     }
-                } catch (e) {
-                    console.error("Received HTML instead of JSON. The deployment lacks permission:", text);
-                    showToast('Error: Google sent a login page. Check script permissions.', true);
+                    if (data.settings) {
+                        appSettings = data.settings;
+                    }
+                    saveData();
+                    showToast('Successfully pulled from Firebase!');
+                } else {
+                    showToast('No data found in cloud yet.', true);
                 }
             } catch (err) {
                 console.error(err);
-                showToast('Connection error. Check your URL.', true);
+                showToast('Connection error. Could not load.', true);
             }
 
             isSyncing = false;
@@ -553,18 +551,12 @@
                 <div class="p-4 border-t bg-gray-50 flex flex-col gap-2">
                     
                     <div class="bg-indigo-50 border border-indigo-100 rounded-lg p-3 mb-2 flex flex-col gap-2">
-                        ${appSettings.cloudUrl ? `
-                            <button onclick="pullFromCloud()" class="w-full flex items-center justify-center gap-2 py-1.5 px-3 bg-white border border-indigo-200 text-indigo-700 rounded text-sm hover:bg-indigo-50 transition-colors" ${isSyncing ? 'disabled' : ''}>
-                                ${isSyncing ? '<i class="fa-solid fa-circle-notch fa-spin"></i>' : '<i class="fa-solid fa-cloud-arrow-down"></i>'} Pull
-                            </button>
-                            <button onclick="pushToCloud()" class="w-full flex items-center justify-center gap-2 py-1.5 px-3 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700 shadow-sm transition-colors" ${isSyncing ? 'disabled' : ''}>
-                                ${isSyncing ? '<i class="fa-solid fa-circle-notch fa-spin"></i>' : '<i class="fa-solid fa-cloud-arrow-up"></i>'} Push
-                            </button>
-                        ` : `
-                            <button onclick="openSettings()" class="w-full flex items-center justify-center gap-2 py-1.5 px-3 bg-white border border-green-200 text-green-700 rounded text-sm hover:bg-green-50 transition-colors">
-                                <i class="fa-solid fa-cloud"></i> Connect Cloud
-                            </button>
-                        `}
+                        <button onclick="pullFromCloud()" class="w-full flex items-center justify-center gap-2 py-1.5 px-3 bg-white border border-indigo-200 text-indigo-700 rounded text-sm hover:bg-indigo-50 transition-colors" ${isSyncing ? 'disabled' : ''}>
+                            ${isSyncing ? '<i class="fa-solid fa-circle-notch fa-spin"></i>' : '<i class="fa-solid fa-cloud-arrow-down"></i>'} Pull from Cloud
+                        </button>
+                        <button onclick="pushToCloud()" class="w-full flex items-center justify-center gap-2 py-1.5 px-3 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700 shadow-sm transition-colors" ${isSyncing ? 'disabled' : ''}>
+                            ${isSyncing ? '<i class="fa-solid fa-circle-notch fa-spin"></i>' : '<i class="fa-solid fa-cloud-arrow-up"></i>'} Push to Cloud
+                        </button>
                     </div>
 
                     <button onclick="openSettings()" class="w-full flex items-center justify-center gap-2 py-2 px-4 bg-gray-800 text-white rounded text-sm hover:bg-gray-700 shadow-sm transition-colors mb-1">
